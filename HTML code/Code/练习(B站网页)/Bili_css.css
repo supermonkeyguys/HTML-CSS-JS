@@ -1,0 +1,22 @@
+* {
+    margin:0;
+    padding:0;
+}
+ul,li,ol{    
+    list-style:none;
+}
+a{
+    text-decoration:none;
+    cursor:pointer; 
+}
+body{
+    background-color:#fff;
+    font-size:14px;
+}
+input{
+    border:0;
+    outline-style:none;
+}
+img{
+    vertical-align:middle;
+}

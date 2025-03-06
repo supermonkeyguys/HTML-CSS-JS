@@ -1,0 +1,27 @@
+
+            
+            body{
+                border:0;
+                padding:0;
+                margin:0;
+            }
+            .header{
+                display:flex;
+                background-color:slategrey;
+            }
+            .box{
+                display:inline-block;
+                flex:1;
+                font-size: 60px;
+                align-content: center;
+                text-align:center;
+
+                color:greenyellow;
+                border:1px solid aquamarine;
+                height:150px;
+
+                padding:8px;
+                margin:8px;
+            }
+        
+        

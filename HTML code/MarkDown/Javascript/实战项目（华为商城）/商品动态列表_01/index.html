@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="index.css">   
+</head>
+<body>
+    <!-- head -->
+    <div class="wrapper">
+        <div class="crumbs">
+            <span class="item">首页</span>
+            <span>&gt;</span>
+            <span class="item">笔记本</span>
+        </div>
+    </div>    
+    <!-- middle -->
+    <div class="operation">
+        <ul class="row category">
+            <li class="item">分类: </li>
+            <li class="item">笔记本</li>
+            <li class="item">台式机</li>
+            <li class="item">智慧屏</li>
+        </ul>
+        <div class="row discount">
+            <li class="item">服务优惠: </li>
+            <li class="item">仅看有货</li>
+            <li class="item">分期免息</li>
+            <li class="item">优惠商品</li>
+        </div>
+        <div class="row sort">
+            <li class="item">排序: </li>
+            <li class="item active">综合</li>
+            <li class="item">最新</li>
+            <li class="item">评论数</li>
+            <li class="item">价格</li>
+        </div>
+    </div>
+
+    <ul class="product">
+        <li class="item">
+            <a href="#">
+                <img class="album" src="img/notebook_1.png" alt="">
+                <div class="name">Matebook X Pro Ultra典藏版</div>
+                <div class="pay">预定立减300|12期免息</div>
+                <div class="price">
+                    <div class="now">$13999</div>
+                    <div class="discount">$14999</div>
+                </div>
+                <div class="service">
+                    <span class="tip">分期免息</span>
+                    <span class="tip">赠送积分</span>
+                </div>
+                <div class="comment">
+                    <span>6978人评论</span>
+                    <span>94% 好评</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+    <!-- 获取resultList -->
+    <script src="json.js"></script>
+    <script>
+        // 1.动态的展示商品列表
+        var productElement = document.querySelector('.product')
+        for(var i = 0 ; i < resultList.length ; i ++ ){
+            // 获取其中的数据
+            var resultItem = resultList[i];
+
+            // 将第一条数据转成界面一个item
+            // 1.1.item
+            var itemElement = doucument.createElement('li');
+            itemElement.classList.add('item');
+            productElement.append(itemElement);
+            // 创建a元素
+            var aElement = document.createElement("a");
+            aElement.href = "#";
+            // 添加img
+            var albumElement = document.createElement("img");
+            albumElement.classList.add("album");
+            // 一般在开发中服务器会给到图片的地址(URL)而不是路径或文件名称
+            // src=`${}${}${}`
+            albumElement.src = "/img/product_01.png";
+            aElement.append(albumElement);
+            // 创建name
+            var nameElement = doucment.Element("div");
+            nameElement.classList.add("name");
+            nameElement.textContent = resultItem.name;
+            aElement.append(nameElemnet);
+            //创建price
+            var priceElement = document.createElement("div");
+            priceElement.classList.add("price");
+            priceElement.textContent = "$" + resultItem.priceElement;
+            aElement.append(priceElement);
+            // ......
+
+        }
+    </script>
+</body>
+</html>

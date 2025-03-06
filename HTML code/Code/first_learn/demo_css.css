@@ -1,0 +1,28 @@
+body{
+    margin:0px;
+}
+#header{
+    background-color:gray;
+    text-align:center;
+    height: 30px;
+    position:relative;
+}
+#header a{
+    color:aquamarine;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size:20px;
+}
+#header a:hover{
+    color:azure;
+}
+#header a:not(:last-child)::after{
+    content: "|";
+    color:black;
+    margin-left:20px;
+}
+#block{
+    text-align:center;
+    font-size:50px;
+    color:aqua;
+}

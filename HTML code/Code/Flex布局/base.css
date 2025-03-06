@@ -1,0 +1,97 @@
+body{
+    margin:0;
+    height:100vh;
+    background-color:#eee;
+    /* border: 1px solid black; */
+    overflow:hidden;
+}
+
+.shadow{
+    box-shadow:rgb(0 0 0 / 20%) 0px 2px 1px -1px,
+    rgb(0 0 0 / 14%) 0px 1px 1px 0px , rgb(0 0 0 / 12%) 0px 1px 3px 0px;
+}
+
+/* *{
+    border:1px solid black;
+} */
+
+.flex{
+    display:flex;
+}
+.baise{
+    width:200px;
+    background-color:white;
+}
+.flex1{
+    flex:1;
+}
+.column{
+    flex-direction:column;
+}
+.header-line{
+    height:60px;
+    width:100%
+}
+
+.left-liner{
+    display:flex;
+    flex-direction:column;
+    flex:3;
+
+    margin:8px;
+    margin-right:8px;
+    margin-top:8px;
+}
+
+.date-box{
+    height:100px;
+    background-color:#fff;
+    
+    margin:8px;
+    margin-right:8px;
+    margin-top:8px;
+}
+.info{
+    min-height:350px;
+    flex-grow:1;
+    width:95%;
+
+    margin:8px;
+    margin-right:8px;
+    margin-top:8px;
+}
+/* 右区 */
+.right-liner{
+    flex:1;
+    
+    margin:8px;
+    margin-right:8px;
+    margin-top:8px;
+}
+
+.hint{
+    display:flex;
+    height:150px;
+    /* align-items:center; */
+    width:80%;
+    /* width:100%; */
+
+    margin:8px;
+    margin-right:10%;
+    margin-top:8px;
+
+    margin-left:10%;
+}
+.message{
+    display:flex;
+    height:300px;
+    align-items:center;
+    width:80%;
+    /* width:100%; */
+
+    margin:8px;
+    margin-right:10%;
+    margin-top:8px;
+
+    margin-left:10%;
+}

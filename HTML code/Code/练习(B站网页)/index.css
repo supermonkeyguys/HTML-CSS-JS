@@ -1,0 +1,474 @@
+.bili-nav{
+    display:flex;
+    align-items:center;
+    padding:0 24px;
+    width:100%;
+    /* 上面的padding+width会导致一个问题:尺寸宽度会变成100% + 24 + 24 */
+    /* 但可以用box-sizing解决 */
+    box-sizing:border-box;
+
+    position:absolute;
+    top:0;
+    z-index:1000;
+}
+/* 左侧区域 */
+.left-entry{
+    display:flex;
+}
+.left-entry .entry-title{
+    display:flex;
+    height:64px;
+    align-items:center;
+    color:aliceblue;
+    margin-right:15px;
+}
+.left-entry .entry-title svg{
+    margin-right:6px;
+}
+/* 中间搜索栏背景*/
+.center-search-container{
+    flex:1;
+    height:40px;
+    padding:0 48px 0 4px;
+    border-radius:8px;
+    border: 1px solid #e3e5e7;
+    background-color:#f1f2f3;
+    display:flex;
+    align-items:center;
+    position:relative;
+}
+/* 悬停效果 */
+.center-search-container:hover{
+    background-color:#fff;
+}
+/* 输入文字内容 */
+.center-search-container .nav-search-content{
+    display:flex;
+    height:20px;
+    width:100%;
+    /* 让文字与边框有左右边距 */
+    padding:0 8px;
+}
+/* 输入框 */
+.nav-search-content .nav-search-input{
+    flex:1;
+    /* 背景颜色透明 */
+    background-color:transparent;
+    line-height:20px;
+    padding-right:8px;
+    overflow:hidden;
+}
+/* 按钮 */
+.center-search-container .nav-search-button{
+    position:absolute;
+    top:4px;
+    right:7px;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+    width:32px;
+    height:32px;
+    line-height:32px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:background-color .3s;
+}
+/* 按钮悬停效果 */
+.center-search-container .nav-search-button:hover{
+    background-color:#e3e4e5;
+}
+
+/* nav-右侧 */
+.right-entry{
+    margin-left:10px;
+    display:flex;
+    align-items:center;
+}
+.right-entry .header-avatar{
+    height:50px;
+    width:50px;
+    padding-right:10px;
+    position:relative;
+}
+.right-entry .header-avatar a{
+    position:absolute;
+    top:6px;
+    left:10px;
+    width:36px;
+    height:36px;
+    line-height:36px;
+    border-radius:50%;
+    background-color:blueviolet;
+    display:flex;
+    justify-content:center;
+    border:2px solid #fff;
+    color:#fff;
+}
+.right-entry .right-entry-items{
+    min-width:50px;
+    margin-right:4px;
+}
+.right-entry .right-entry-items a{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    color:#fff;
+}
+.right-entry .right-entry-items a span{
+    font-size:14px;
+}
+.right-entry .upload{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:90px;
+    height:34px;
+    line-height:34px;
+    border-radius:8px;
+    background-color:#fb7299;
+    color:#fff;
+    margin-left:10px;
+}
+.right-entry .upload span{
+    margin-left:5px;
+}
+
+/* banner区域 */
+.bili-banner{
+    position:relative;
+    height:150px;
+    width:100%;
+    overflow:hidden;
+}
+
+.bili-banner img{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+}
+
+.bili-banner .logo{
+    width:100%;
+    height:100%;
+    padding:0 64px;
+    display:flex;
+    align-items:flex-end;
+}
+
+.bili-banner .logo a{
+    position:relative;
+    width:220px;
+    height:105px;
+    margin-bottom:10px;
+}
+
+.bili-banner .mask{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:linear-gradient(rgba(0,0,0,0.4));
+}
+
+.bili-channel{
+    height:110px;
+    padding:0 60px;
+    display:flex;
+    align-items:center;
+}
+
+.bili-channel .channel-icon{
+   display:flex; 
+}
+
+.bili-channel .channel-icon a{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    margin-right:20px;
+}
+
+.bili-channel .icon-bg{
+    width:40px;
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    margin-bottom:6px;
+}
+
+.bili-channel .icon-bg_dynamic{
+    background-color:#ff9212;
+}
+
+.bili-channel .icon-bg_popular{
+    background-color:#f07775;
+}
+
+.bili-channel .icon-bg svg{
+    width:25px;
+    height:25px;
+}
+
+.bili-channel span{
+    text-align:center;
+    color:black;
+}
+/* 左侧频道表 */
+.bili-channel .right-channel-container{
+    width:100%;
+    display:flex;
+}
+
+.bili-channel .channel-items_left{
+    display:grid;
+    grid-template-columns:repeat(11,1fr);
+    gap:10px;
+}
+
+.bili-channel .channel-items_left a{
+    height:30px;
+    width:60px;
+    line-height:30px;
+    background-color: #f6f7f8;
+    border:1px solid #f1f2f3;
+    border-radius:6px;
+    text-align:center;
+    color:#61666d;
+
+}
+/* 右侧频道表 */
+.bili-channel .channel-items_right{
+    position:relative;
+    width:240px;
+    display:grid;
+    grid-template-rows:repeat(2,1fr);
+    grid-auto-flow:column;
+    row-gap:10px;
+    flex-shrink:0;
+    margin-left:30px;
+    border-left: 1px solid #e2e5e7;
+}
+
+.channel-items_right a{
+    width:100%;
+    height:28px;
+    letter-spacing:2px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+}
+
+.channel-items_right svg{
+    width:20px;
+    height:20px;
+    margin-right:4px;
+    fill:#61666d;
+}
+
+.channel-items_right span{
+    color:#61666d;
+}
+/* 推荐列表 */
+.main{
+    width:100%;
+    padding:0 60px;
+    box-sizing:border-box;
+}
+.main .recommended-container{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:20px;
+    width:100%;
+}
+
+.main .recommended-card .card-image{
+    position:relative;
+    border-radius:6px;
+    overflow:hidden;
+}
+
+.main .card-image img{
+    width:100%;
+    height:100%;
+    /* vertical-align:middle; */
+}
+
+.card-image .image-mask{
+    position:absolute;
+    bottom:0;
+    left:0;
+    padding:16px 8px 6px;
+    width:100%;
+    box-sizing:border-box;
+    height:38px;
+    background-image:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.8) 100%);
+    color:#fff;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+}
+
+.card-image .image-mask .stats-left{
+    flex:1;
+    display:flex;
+    align-items:center;
+}
+
+.image-mask .stats-left .stats-item{
+    display:flex;
+    align-items:center;
+    margin-right:12px;
+}
+
+.image-mask svg{
+    width:18px;
+    height:18px;
+    color:#fff;
+    margin-right:2px;
+}
+
+/* 底部信息 */
+.card-info h3{
+    line-height:22px;
+    padding-right:16px;
+    font-size:15px;
+    overflow:hidden;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    line-break:anywhere;
+    -webkit-line-clamp: 2;
+}
+
+.info-bottom{
+    margin-top:4px;
+    display:flex;
+    font-size:13px;
+}
+
+.info-bottom a{
+    color:#9499a0;
+    display:flex;
+    align-items:center;
+}
+
+.info-bottom svg{
+    width:17px;
+    height:17px;
+    margin-right:2px;
+}
+
+.info-bottom .info-date{
+    margin-left:10px;
+}
+
+/* 轮播图 */
+.recommended-container .carousel-area{
+    grid-row:1/3;
+    grid-column:1/3;
+    border-radius:6px;
+    overflow:hidden;
+    position:relative;
+}
+
+.carousel-img{
+    width:100%;
+}
+
+.carousel-area img{
+    align-items:center;
+    align-self:center;
+    height:260px;
+    width:100%;
+}
+
+.carousel-area .mask{
+    width:100%;
+    height:300px;
+    position:absolute;
+    top:0;
+    background:linear-gradient(0,#6a91bd 13%,transparent 75%);
+    border-radius:6px;
+}
+
+.carousel-area .tools{
+    width:100%;
+    position:absolute;
+    bottom:54px;
+    left:0px;
+    padding:0 15px;
+    box-sizing:border-box;
+}
+
+.carousel-area .tools a{
+    display:flex;
+    margin-bottom:10px;
+    font-size:18px;
+    color:#fff;
+}
+
+.carousel-area .tools ul{
+    display:flex;
+}
+
+.carousel-area .tools li{
+    width:8px;
+    height:8px;
+    margin:4px;
+    border-radius:50%;
+    background-color:#fff6;
+    cursor:pointer;
+}
+
+.carousel-area .tools li.active{
+    width:14px;
+    height:14px;
+    margin:1px;
+    background-color:#fff;
+}
+
+.carousel-area .tools .buttons{
+    position:absolute;
+    bottom:23px;
+    right:15px;
+}
+
+.tools button{
+    width:28px;
+    height:28px;
+    border-radius:8px;
+    margin-right:8px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background-color:transparent;
+    border: 1px solid #fff;
+}
+
+.tools svg{
+    width:12px;
+    height:12px;
+    color:#fff;
+}
+.carousel-img{
+    position:relative;
+    list-style:none;
+    padding:0;
+    margin:0;
+    width:1300px; 
+    height:650px;
+    overflow:hidden;
+}
+.carousel-img li{
+    position:absolute;
+    text-align:center;
+    opacity:0;
+    transition:opacity 1s;
+}
+.carousel-img li.focus{
+    opacity:1;
+}

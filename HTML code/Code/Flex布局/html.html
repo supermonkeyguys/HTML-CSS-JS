@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex布局</title>
+    <link rel="stylesheet" href="base.css">
+</head>
+<body class="flex">
+    <!-- 侧边栏 -->
+    <div class="baise shadow"></div>
+    <!-- 主区域 -->
+    <div class="flex1 flex column">
+        <!-- 头部栏 -->
+        <div class="header-line baise shadow"></div>
+        <!-- 内容区 -->
+        <div class="flex1 flex">
+            <!-- 左区 -->
+            <div class="left-liner">
+                <!-- 数据区 -->
+                <div class="date-area flex">
+                    <!-- 数据块 -->
+                    <div class="date-box flex1 shadow"></div>
+                    <div class="date-box flex1 shadow"></div>
+                    <div class="date-box flex1 shadow"></div>
+                    <div class="date-box flex1 shadow"></div>
+                </div>
+                <!-- 列表区 -->
+                <div style="align-items:center" class="flex column">
+                    <div class="info baise shadow"></div>
+                    <div class="info baise shadow"></div>
+                    <div class="info baise shadow"></div>
+                </div> 
+            </div>
+            <!--右区 -->
+            <div class="right-liner">
+                <!-- 提示区 -->
+                <div class="hint baise shadow"></div>
+                <!-- 消息区 -->
+                <div class="message baise shadow"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
