@@ -31,11 +31,11 @@
                 <li class="item">赠送积分</li>
             </ul>
             <ul class="row sort">
-                    <li class="item">排序: </li>
-                <li class="item active">综合</li>
-                <li class="item">最新</li>
-                <li class="item">评论数</li>
-                <li class="item">价格</li>
+                <li class="item">排序: </li>
+                <li class="item active" data-key="default">综合</li>
+                <li class="item" data-key="goodRate">好评</li>
+                <li class="item" data-key="rateCount">评论数</li>
+                <li class="item" data-key="price">价格</li>
             </ul>
         </div>
 
@@ -78,7 +78,9 @@
   
         }
 
-        var finalResultList = resultList;
+        
+        // 商品条件过滤数据
+        var finalResultList = [].concat(resultList);
         function filterResultList() {
             finalResultList = resultList.filter(function(item) {
                 var isFlag = true;
@@ -139,6 +141,34 @@
                 itemEl.classList.add("empty");
                 productEl.append(itemEl);
             }
+        }
+
+        var sortElement = document.querySelector(".sort");
+        var sortActiveItem = document.querySelector(".active");
+        for(var i = 1 ; i < sortElement.children.length ; i ++ ){
+            var sortItemElement = sortElement.children[i];
+            
+            sortItemElement.onclick = function(){
+                sortActiveItem.classList.remove("active");
+                this.classList.add("active");
+                sortActiveItem = this;
+
+                var sortKey = this.dataset.key;
+
+                sortFinalResultList(sortKey);
+            }
+        } 
+
+        function sortFinalResultList(key){
+            if(key === "default"){
+                filterResultList();
+            }
+            else {
+                finalResultList.sort(function(item1,item2){
+                    return item2[key] - item1[key]
+                })
+            }
+            showFinalResultList();
         }
 
     </script>

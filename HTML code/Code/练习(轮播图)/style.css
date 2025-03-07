@@ -1,18 +1,47 @@
-#carousel{
+body{
+    overflow-x:hidden;
+}
+.banner{
     position:relative;
-    list-style:none;
-    padding:0;
-    margin:0;
-    width:1300px; 
-    height:650px;
-    overflow:hidden;
+    width:1152px;
+    height:648px;
 }
-#carousel li{
+.banner .carousel{
+    position:relative;
+}
+.banner .images{
+    transform:scale(0.30);
+    transform-origin:top left;
     position:absolute;
-    text-align:center;
+    top:0;
+    left:0;
+    width:100%;
+
     opacity:0;
-    transition:opacity 1s;
+    transition: opacity 1s ease;
 }
-#carousel li.focus{
+.banner li.focus{
     opacity:1;
+}
+.indicator{
+    width:1152px;
+
+    position:absolute;
+    bottom:20px;
+    display:flex;
+
+    left:0;
+    right:0;
+    justify-content: center;
+}
+.indicator .item{
+    width:8px;
+    height:8px;
+    margin:0 5px;
+    border-radius:50%;
+    background-color:#aaa;
+    cursor:pointer;
+}
+.indicator > .item.focus{
+    background-color:dodgerblue;
 }

@@ -9,7 +9,7 @@ var resultList = [
         ],
         "now":"13999",
         "discount":"14999",
-        "rateCount":6978,
+        "rateCount":678,
         "goodRate":94,
     }
     ,
@@ -21,7 +21,7 @@ var resultList = [
         ],
         "now":"13999",
         "discount":"14999",
-        "rateCount":6978,
+        "rateCount":78,
         "goodRate":94,
     }
     ,
@@ -33,21 +33,8 @@ var resultList = [
         ],
         "now":"13999",
         "discount":"14999",
-        "rateCount":6978,
-        "goodRate":94,
-    }
-    ,
-    {
-        "name":"Matebook X Pro Ultra典藏版",
-        "promotionInfo":"预定立减300|12期免息",
-        "promoLabels":[
-            "分期免息",
-            "赠送积分",
-        ],
-        "now":"13999",
-        "discount":"14999",
-        "rateCount":6978,
-        "goodRate":94,
+        "rateCount":69,
+        "goodRate":99,
     }
     ,
     {
@@ -59,7 +46,7 @@ var resultList = [
         ],
         "now":"13999",
         "discount":"14999",
-        "rateCount":6978,
+        "rateCount":6,
         "goodRate":94,
     }
     ,
@@ -73,7 +60,7 @@ var resultList = [
         "now":"13999",
         "discount":"14999",
         "rateCount":6978,
-        "goodRate":94,
+        "goodRate":100,
     }
     ,
     {
@@ -86,6 +73,19 @@ var resultList = [
         "now":"13999",
         "discount":"14999",
         "rateCount":6978,
+        "goodRate":84,
+    }
+    ,
+    {
+        "name":"Matebook X Pro Ultra典藏版",
+        "promotionInfo":"预定立减300|12期免息",
+        "promoLabels":[
+            "分期免息",
+            "赠送积分",
+        ],
+        "now":"13999",
+        "discount":"14999",
+        "rateCount":978,
         "goodRate":94,
     }
     ,
@@ -98,8 +98,8 @@ var resultList = [
         ],
         "now":"13999",
         "discount":"14999",
-        "rateCount":6978,
-        "goodRate":94,
+        "rateCount":6,
+        "goodRate":74,
     }
     ,
     {
