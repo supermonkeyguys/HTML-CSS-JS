@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+
+        // function foo(){
+        //     console.log("foo:",this)
+        // }
+
+        //显式绑定 > 隐式绑定
+        // var obj = {
+        //     fn:foo
+        // }
+        // obj.fn.apply("Cookie")
+
+        // bind > 默认绑定
+        // var bar = foo.bind("Cookie")
+        // var obj = {
+        //     name:"GG-bond",
+        //     baz:bar
+        // }
+        // obj.baz()
+
+        //new绑定 > 隐式绑定
+        // var obj = {
+        //     name:"Cookie",
+        //     fn:function() {
+        //         console.log("foo:",this)
+        //         console.log("foo:",this === obj)
+        //     }
+        // }
+        // new obj.fn()
+
+        //new不可以和apply/call一起使用
+
+        // new绑定 > bind绑定
+        // function foo() {
+        //     console.log("foo:",this)
+        // }
+
+        // var bindFn = foo.bind("Cookie")
+        // new bindFn()
+
+        //bind > apply/call
+        function foo(){
+            console.log("foo:",this)
+        }
+
+        var bindFn = foo.bind("GG-bond") 
+
+        bindFn.call("Cooike")
+
+
+    </script>
+</body>
+</html>

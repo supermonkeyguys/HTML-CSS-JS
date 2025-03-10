@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        // () => {}
+        setTimeout(() => {
+            console.log("setTimeOut")
+        },3000)
+
+        var names = ["Cookie","GG-bond","LOL"]
+        // 1.只有一个参数可以去除小括号
+        names.forEach(item => {
+            console.log(item)
+        })
+        // 2.如果函数体中只有一条执行代码{}可以省去(return除外)
+        names.forEach(item => console.log(item))
+
+        // 3.return 也可以省掉 但在箭头后的内容将全部自动return
+        var numbers = [78,90,21,213]
+        var filterNumbers = numbers.filter(item => item % 2 === 0)
+        console.log(filterNumbers)
+        //只有一行代码时,这行代码的表达式结果会作为函数的返回值默认返回
+        var arrFn = () => 123
+        console.log(arrFn())
+
+        // 4.如果默认返回值是一个对象, 那么这个对象必须加()
+        // ！！react 中多用 redux
+        var objFn = ({name:"Cookie"})
+        console.log(objFn)
+
+        var nums = [4,5,6,7,8,9]
+        var result = nums.filter(item => item % 2 === 0)
+        .map(item => item * item)
+        .reduce((prevValue,item) => prevValue + item) 
+
+        console.log(result)
+
+        //指向obj
+        var obj = {
+            name:"popguys",
+
+            fo: function() {
+                var bar = () => {
+                    console.log("bar:",this)
+                }
+                return bar
+            }
+        }
+
+        var fn = obj.fo()
+        fn.apply("aaa")
+
+        //指向windows
+        var obj1 = {
+            name:"popguys",
+            fo1 : () => {
+                
+                var bar1 = () => {
+                    console.log("bar:",this)
+                }
+                return bar1
+            }
+        }
+
+        var fn1 = obj1.fo1()
+        fn1.apply("aaa")
+
+    </script>
+
+</body>
+</html>
