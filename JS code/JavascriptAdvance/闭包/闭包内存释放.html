@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        function createAdder(num0){
+            return function adder(num1){
+                return num1 + num0
+            }
+        }
+
+        var adder10 = createAdder(10)
+        console.log(adder10(2))
+        
+        var adder18 = createAdder(18)
+        console.log(adder18(4))
+
+        //内存释放
+        adder10 = null
+
+    </script>
+
+
+</body>
+</html>

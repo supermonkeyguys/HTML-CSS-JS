@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <button class="create">创建</button>
+    <button class="destroy">清除</button>
+
+    <script>
+
+        function createArray(){
+            var array = new Array(1024* 1024).fill(1024)
+            function generateNew() {
+                console.log(array)
+            }
+            return generateNew
+        }
+
+        var totalArray = []
+
+        var createBtnEl = document.querySelector(".create")
+        var destroyBtnEl = document.querySelector(".destroy")
+
+        createBtnEl.onclick = function() {
+            for(var i = 0 ; i < 100 ; i ++ ){
+                totalArray.push(createArray())
+            }
+        }
+        destroyBtnEl.onclick = function() {
+            totalArray = []
+        }
+
+        function foo(){
+            var name = "GG"
+            var age = "18"  
+            var height = 1.8
+            return function foo1(){
+                debugger
+                console.log(name,height)
+                // console.log(age)
+            }
+        }
+
+        var foo1 = foo()
+        foo1()
+
+
+    </script>
+</body>
+</html>l

@@ -430,6 +430,17 @@ function person(name){
 
 ## 浏览器渲染原理
 
+输入 URL 后网页的请求显示过程如下：
+
+1. **DNS 解析**：浏览器先检查本地 DNS 缓存，若没有找到对应记录，就向本地 DNS 服务器发起查询请求，将域名转换为 IP 地址。
+2. **建立 TCP 连接**：浏览器与目标服务器通过三次握手建立 TCP 连接，为数据传输创建可靠通道。
+3. **发送 HTTP 请求**：浏览器向服务器发送 HTTP（S）请求报文，包含请求方法、URL、协议版本等信息。
+4. **服务器处理请求**：服务器接收请求后，根据请求内容进行处理，如查询数据库、调用脚本等，生成响应数据。
+5. **返回 HTTP 响应**：服务器将处理结果封装成 HTTP 响应报文，包含状态码、响应头和响应体，返回给浏览器。
+6. **接收并解析响应**：浏览器接收响应，先根据状态码判断请求是否成功，然后解析响应头获取相关信息，再解析响应体中的 HTML、CSS、JavaScript 等资源。
+7. **渲染页面**：浏览器根据解析的 HTML 构建 DOM 树，结合 CSS 构建渲染树，计算元素的布局和样式，最后绘制出页面。
+8. **关闭连接**：数据传输完成，浏览器和服务器根据情况关闭 TCP 连接 。
+
 ### 1.网页解析过程
 
 ![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-10_20-26-02.png)
@@ -511,6 +522,263 @@ function person(name){
 
 ### 5.defer和async属性
 
-
+#### defer:
 
 ![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-10_22-46-01.png)
+
+#### async:
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-11_20-49-00.png)
+
+
+
+***AI：***
+
+`defer`和`async`是 HTML 中`<script>`标签的两个属性，用于控制脚本的加载和执行行为。
+
+#### 相同点
+
+- 都是用于优化 JavaScript 文件的加载，防止阻塞 HTML 解析。
+- 脚本文件都会在 HTML 解析的同时并行加载，不阻塞 HTML 的解析。
+
+#### 不同点
+
+- 执行顺序：
+  - `defer`：脚本会在 HTML 解析完成后（即 DOM 完全构建后，但在`DOMContentLoaded`事件触发之前）执行。如果页面中有多个带有`defer`属性的脚本，它们会按照在 HTML 中出现的顺序依次执行。
+  - `async`：脚本会在加载完成后立即执行，不受 HTML 解析的影响。脚本的执行时机取决于加载完成的时间，而非 HTML 解析完成的时间。多个带有`async`属性的脚本之间没有固定的执行顺序。
+- 适用场景：
+  - `defer`：适用于需要依赖 DOM 或其他脚本的场景，例如统计代码、广告脚本等。这些脚本必须在 DOM 完全构建后才能正确运行。
+  - `async`：适用于独立运行的脚本，例如第三方统计工具、广告代码、行为分析等。这些脚本不需要依赖 DOM 或其他脚本，可以加快页面加载速度。
+- 脚本依赖性：
+  - `defer`：支持脚本依赖关系，保证执行顺序。
+  - `async`：不支持脚本依赖关系，可能导致执行顺序错误。
+
+#### 总结
+
+如果脚本需要在 HTML 解析完成后运行，并且多个脚本之间存在依赖关系，建议使用`defer`；如果脚本是独立的，不依赖其他脚本或 DOM，可以使用`async`来优化加载速度。
+
+
+
+# Javascript运行原理
+
+### ***ES***
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-11_21-30-10.png)
+
+
+
+## 1.V8引擎
+
+***JS引擎在执行代码之前，会在堆内存内创建一个全局对象：Global Object(GO)***
+
+​	该对象 **所有的作用域（scope）** 都可以访问
+
+​	内部包含 **Data，Array，String，Number，setTimeout，setInterva**l 等
+
+​	还有一个 **window属性** 指向自己
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-11_21-04-51.png)
+
+
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-11_21-22-35.png)
+
+
+
+## 2.JS执行上下文
+
+
+
+
+
+
+
+## 3. 
+
+#### 认识VO对象
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-11_22-36-51.png)
+
+
+
+## 4.函数代码执行过程
+
+**在先前全局代码会先将函数代码解析好，在函数被调用时会创建一个新的VO对象（也叫做AO(Active Object)，会被推入执行上下文栈（堆内存）的栈顶）和函数关联，之后会执行函数中的代码先解析（函数内部中的 所创建的东西开始为undefined 还会携带arguments（有参数argument就有值，反之）），之后开始给值一一赋值，之后代码正常顺序执行**
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-12_19-49-44.png)
+
+
+
+## 5.作用域和作用域链
+
+***函数作用域与 函数的定义位置 有关，还会受到 块级作用域 、 闭包 、`with` 语句和 `eval` 函数等因素的影响。***
+
+### ***作用域链：***
+
+***在函数内部，如果要访问一个变量，会首先在函数的局部作用域中查找，如果没有找到，就会向上一级作用域查找，直到全局作用域。***
+
+```javascript
+var x = 10;  // 全局变量
+
+function outer() {
+    var x = 20;  // 局部变量
+    function inner() {
+        console.log(x);  // 输出20，因为在局部作用域中找到了x
+    }
+    inner();
+}
+
+outer();
+console.log(x);  // 输出10，因为在全局作用域中找到了x
+```
+
+
+
+```javascript
+var message = "Global Message"
+
+function foo(){
+    var name = "foo"
+    function bar(){
+        console.log(name)
+        function text(){
+            console.log(message)
+        }
+        return text
+    }
+    return bar
+}
+
+var bar = foo()
+var text = bar()
+text()
+```
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-12_21-06-25.png)
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-12_21-16-42.png)
+
+ 
+
+
+
+# Javascript内存管理和闭包
+
+### ***认识内存管理：***
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-12_22-29-32.png)
+
+
+
+## 1.Javascript内存管理
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-12_22-30-51.png)
+
+
+
+### V8内存管理：
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-13_20-05-28.png)
+
+
+
+## 2.*垃圾回收机制算法（面试）
+
+***垃圾回收器会定期检查内存中的对象，找出那些不再被引用的对象，并释放它们占用的内存。***
+
+V8ben
+
+**标记清除：**
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-13_20-21-40.png)
+
+**常见的：**
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-13_20-11-07.png)
+
+
+
+## 3.闭包的概念理解
+
+***闭包：通过作用域链***
+
+  ![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-13_20-44-27.png)
+
+
+
+## 4.闭包的形成过程
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\闭包的形成.png)
+
+
+
+## 5.闭包的内存泄露
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\闭包内存泄露释放.png)
+
+***被遗弃的内容不再使用，不进行内存释放删除被遗弃内容，导致内存堆积***
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <button class="create">创建</button>
+    <button class="destroy">清除</button>
+
+    <script>
+
+        function createArray(){
+            var array = new Array(1024* 1024).fill(1024)
+            function generateNew() {
+                console.log(array)
+            }
+            return generateNew
+        }
+
+        var totalArray = []
+
+        var createBtnEl = document.querySelector(".create")
+        var destroyBtnEl = document.querySelector(".destroy")
+
+        createBtnEl.onclick = function() {
+            for(var i = 0 ; i < 100 ; i ++ ){
+                totalArray.push(createArray())
+            }
+        }
+        destroyBtnEl.onclick = function() {
+            totalArray = []
+        }
+
+
+    </script>
+</body>
+</html>l
+```
+
+**在浏览器中会有对应的内存优化，当AO有对象未被访问时，会将其释放**
+
+```javascript
+function foo(){
+	var name = "GG"
+	var age = "18"
+	var height = 1.8
+	return function foo1(){
+        //debugger
+		console.log(name,height)
+	}
+}
+
+var foo1 = foo()
+foo1()
+```
+
+
+
+
+
