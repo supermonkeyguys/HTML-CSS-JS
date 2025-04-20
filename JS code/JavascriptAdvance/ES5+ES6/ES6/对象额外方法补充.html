@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script src="inherit_utils.js"></script>
+    <script>
+
+        var obj = {
+            name:"Cookie",
+            age:19
+        } 
+
+        var info = createObject(obj);
+        info.address = "HN";
+        info.intro = "HELLO";
+
+        //hasOwnProperty方法
+        console.log(info.hasOwnProperty("name"))//false 在当前对象上查找
+        //in方法
+        console.log("name" in info);//true 在原型和对象中查找
+        
+        console.log(info.hasOwnProperty("address"))
+        console.log("address" in info);
+        
+        //for in 方法 和in查找相同
+        for(var Element in info){
+            console.log(Element);
+        }
+
+        //instanceof
+        //用于检测构造函数(Person,Student类)的prototype
+        //是否出现在某个实例对象的原型链上
+        //判断对象与构造函数之间的关系
+        function Person(){};
+        function Student(){};
+        inherit(Student,Person)
+
+        var stu = new Student();
+        console.log(stu instanceof Student);
+        console.log(stu instanceof Person);
+        console.log(stu instanceof Object);
+        console.log(stu instanceof Array);
+        
+        console.log("-------------")
+        //isPrototypeOf
+        //用于检测某个对象, 是否出现在某个实例对象的原型链上
+        //判断对象与对象之间的继承
+        console.log(Student.prototype.isPrototypeOf(stu));
+        console.log(Person.prototype.isPrototypeOf(stu));
+        console.log(Object.prototype.isPrototypeOf(Person));
+
+        console.log(Function);
+
+    </script>
+</body>
+</html>

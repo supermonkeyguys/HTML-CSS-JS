@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        var double = x => {
+            return 2 * x;
+        }
+
+        var pow2 = x => {
+            return x ** 2;
+        }
+
+        var compose = x => {
+            return pow2(double(x))
+        }
+        console.log(compose(5))
+
+        function composeFn(...fns){
+            var length = fns.length
+            if(length <= 0)return
+            //检测是否合法传入函数
+            for(var i = 0 ; i < length ; i ++ ){
+                var fn = fns[i];
+                if(typeof fn !== "function"){
+                    throw new Error(`Index position ${i} must be a function`)
+                }
+            }
+            
+            return function(...args){
+                var res = fns[0].apply(this,args)
+                for(var i = 1 ; i < length ; i ++ ){
+                    var fn = fns[i]
+                    res = fn.apply(this,[res])
+                }
+                return res
+            }
+        }
+        //console.log默认会返回undefined
+        var newFn = composeFn(double,pow2,console.log)
+        // console.log(newFn(10))
+        newFn(10)
+
+
+    </script>
+</body>
+</html>

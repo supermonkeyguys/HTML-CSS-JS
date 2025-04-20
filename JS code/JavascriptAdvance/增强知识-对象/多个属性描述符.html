@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        var obj = {
+            name:"Cookie",
+            age:19,
+            home:"HN"
+        }
+
+        var _age = 19
+        Object.defineProperties(obj,{
+            name:{
+                writable:true,
+                value:"Popguys"
+            },
+            age:{
+                // writable:true,
+                set:function(value){
+                    _age = value;
+                },
+                get:function(){
+                    console.log(_age)
+                    return _age;
+                }
+            }
+        })
+
+        obj.age = 21
+        console.log(obj.age)
+
+        console.log(Object.getOwnPropertyDescriptor(obj,"name"))
+        console.log(Object.getOwnPropertyDescriptors(obj))
+
+        Object.preventExtensions(obj)
+        
+
+    </script>
+</body>
+</html>

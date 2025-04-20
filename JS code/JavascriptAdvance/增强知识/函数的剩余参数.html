@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    
+    <script>
+
+        //剩余参数 : rest parameters
+        function foo(m,n,...rest){
+            console.log(rest)
+        }
+        foo(2,3,78,91,69)
+
+        function bar(...other){
+            console.log(other)
+        }
+        bar(19,23,43,5)
+
+    </script>
+</body>
+</html>

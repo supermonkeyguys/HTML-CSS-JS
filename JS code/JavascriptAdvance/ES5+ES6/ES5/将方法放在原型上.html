@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        function Student(name,age,dot){
+            this.name = name,
+            this.age = age,
+            this.dot = dot
+        }
+
+        Student.prototype.playing = function() {
+            console.log(this.name + " is playing");
+        }
+        Student.prototype.eating = function() {
+            console.log(this.name + " is eating");
+        }
+        
+        var stu1 = new Student("Cookie",19,100)
+        var stu2 = new Student("Popguys",20,100)
+
+        stu1.playing();
+        stu2.eating();
+
+    </script>
+</body>
+</html>

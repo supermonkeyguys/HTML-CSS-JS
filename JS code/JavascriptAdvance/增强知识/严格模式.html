@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>    
+        "use strict"
+
+        //函数内开启
+        // function foo(){
+        //     // "use strict"
+        //     return 1
+        // }
+
+        //限制
+        //1.无法意外创建全局变量
+        // function bar(){
+        //     message = "Hello JavaScript"
+        // }
+
+        // bar()
+        // console.log(message)
+
+        //2.静默错误(有错误但不报错)
+        // var obj = {
+        //     name: "Cookie"
+        // }
+
+        // Object.defineProperty(obj,"name",{
+        //     writable:false,
+        //     configurable:false
+        // })
+
+        // obj.name = "Popguys"
+
+        // console.log(obj.name)
+
+        //3.删除不可删除属性
+        // delete obj.name
+        // console.log(obj)
+
+        //4.相同命名
+        // function foo(num,num){
+
+        // }
+
+        //5.eval函数不能为上层创建变量
+        // eval('var message = "Hello JavaScript"')
+        // console.log(message)
+
+        //6.严格模式下,this不会转成对象类型
+        function foo(){
+            console.log(this)
+        }
+        foo.apply("abc")
+        foo.apply(123)
+        foo.apply(undefined)
+        foo.apply(null)
+
+        foo()
+
+    </script>
+</body>
+</html>

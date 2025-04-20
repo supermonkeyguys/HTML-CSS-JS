@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function foo(){}
+
+        var obj = {
+
+        }
+
+        console.log(this.obj)
+
+        console.log(foo.name)
+
+        //参数个数
+        console.log(foo.length)
+
+        //传入的参数以数组形式接收(...(name)),并且以这种方式传入的参数不算进length
+        //传入默认值的参数也不会算进length
+        function demo(m , n = 30 , ...arguments){
+            console.log(arguments[1])
+            console.log(n)
+            console.log(m)
+            console.log(demo.length)//1
+        }
+        demo(1,2,"GG","bond")
+
+    </script>
+</body>
+</html>

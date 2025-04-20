@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        function Person(){
+
+        }
+        console.log(Object.keys(Person.prototype))
+        console.log(Person.prototype)
+
+        Person.prototype = {
+            message: "Hello Stranger",
+            info:{
+                name:"Cookie",
+                age:19
+            },
+            online : function(){
+                console.log(this.info.name + " is online")
+            },
+            play : function(){},
+            constructor: Person
+
+        }
+        console.log(Object.keys(Person.prototype))
+
+        var p1 = new Person()
+        console.log(p1.info)
+
+        p1.online()
+
+    </script>
+</body>
+</html>

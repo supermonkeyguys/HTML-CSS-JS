@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        var obj = {
+            name: "Cookie"
+        }
+
+        var _name = ""
+        Object.defineProperty(obj,"name",{
+            configurable:true,
+            enumerable:false,
+            set:function(value){
+                console.log("Set方法被调用",value)
+                _name = value
+            },
+            get:function(){
+                console.log("Get方法被调用",_name)
+                return _name
+            }
+        })
+
+        obj.name = "Popguys"
+        obj.name = "Supermonkeyguys"
+        obj.name = "Whatup2021"
+
+        console.log(obj.name)
+
+    </script>
+</body>
+</html>

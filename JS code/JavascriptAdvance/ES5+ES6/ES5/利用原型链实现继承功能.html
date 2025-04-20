@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    
+    <script>
+        function Person(name,age){
+            this.name = name,
+            this.age = age
+        }
+
+        Person.prototype.online = function() {
+            console.log("Online~")
+        }
+
+        function Student(name,age,sno,score){
+            // this.name = name,
+            // this.age = age,
+            Person.call(this,name,age)
+            this.sno = sno,
+            this.score = score
+        }
+
+        // 方式一：父类原型直接赋值给子类原型
+        //缺点：父类和子类共享一个原型对象，修改一个，另外一个也与之修改
+        Student.prototype = Person.prototype
+
+
+        
+        //方式二：创建一个父类的实例对象---实现效果有点像牵线搭桥
+        //Object.create(x)方法会创建一个新对象并把这个对象的隐式原型绑定在x的显示原型上
+        var obj = Object.create(Person.prototype)
+        Student.prototype = obj
+        //中间借用函数,而非对象的方法(可以不使用__proto__,因为这个存在一定兼容问题)
+        // function f(){}
+        // f.prototype = Person.prototype
+        // Student.prototype = new f()
+        var p = new Person("Cookie",19)
+        Student.prototype = p
+
+        Student.prototype.studying = function(){
+            console.log(this.name + " is studying")
+        }
+
+        var stu1 = new Student("Cookie",19)
+        stu1.studying()
+
+        //写一个自己的Object.create
+        function createObject(type){
+            function f(){}
+            f.prototype = f
+            return new f()
+        }
+        //封装工具函数
+        function inherit(Subtype, Supertype){
+            Subtype.prototype = createObject(Supertype.prototype) 
+            // Subtype.prototype = Object.create(Supertype.prototype)
+            Object.defineProperty(Subtype.prototype,"constructor",{
+                enumerable:false,
+                configurable:true,
+                writable:true,
+                value:Subtype
+            })
+        }
+
+        inherit(Student,Person)
+        
+    </script>
+</body>
+</html>

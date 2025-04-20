@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        //相同输入，输出相同
+        //无副作用
+        function sum(num1 , num2){
+            return num1 + num2
+        }
+
+        //不是一个纯函数，在被调用时已对外部环境产生副作用，与外界产生关联 
+        function coutInfo(info){
+            console.log(info.name,info.age,info.message)
+            info.message = "GO"
+        }
+
+        var obj = {
+            name:"GG-bond",
+            age:19,
+            message:"Vo"
+        }
+        console.log(obj.message)
+        coutInfo(obj)
+        console.log(obj.message)
+
+    </script>
+</body>
+</html>

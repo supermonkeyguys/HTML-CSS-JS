@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        //写法一：
+        function foo(x){
+            return function foo1(y){
+                return function foo2(z){
+                    return x + y + z
+                }
+            }
+        }
+
+        var fooX = foo(10)
+        var fooY = fooX(20)
+        var fooZ = fooY(30)
+
+        console.log(fooZ)
+
+        //写法二：
+        //回忆：箭头函数会默认将箭头后的内容返回
+        //以下写法就相当于返回函数(优化省去了()和{})
+        // var bar = x => y => z => console.log(x + y + z)
+        var bar = x => y => z => console.log(x + y + z)
+        bar(10)(20)(30)
+
+        var foo = (x,y,z) => console.log(x + y + z)
+
+        var sum = (x1,x2) => {
+            return x1 + x2
+        }
+
+        //自动柯里化封装
+        //递归拆解
+        function hyCurrying(fn){
+            function curryFn(...args){
+                if(args.length >= fn.length){
+                    return fn(...args)
+                }
+                else {
+                    return function(...newArgs){
+                        //递归
+                         return curryFn(...args.concat(newArgs))
+                    }
+                }
+            }
+            return curryFn
+        }
+
+        var fooCurry = hyCurrying(foo)
+        fooCurry(10)(20)(30)
+        var sumCurry = hyCurrying(sum)
+        var sum5 = sumCurry(5)
+        console.log(sum5)
+        console.log(sum5(10))
+
+    </script>
+</body>
+</html>

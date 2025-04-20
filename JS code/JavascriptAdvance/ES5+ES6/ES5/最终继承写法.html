@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script src="inherit_utils.js"></script>
+    <script>
+        //方案三:
+        function Person(name,age,address){
+            this.name = name,
+            this.age = age,
+            this.address = address
+        };
+
+        Person.prototype.online = function(){
+            console.log(this.name + " is online");
+        }
+        Person.prototype.leaving = function(){
+            console.log(this.name + " is leaving");
+        }
+        Person.prototype.from = function(){
+            console.log(this.name + " is from " + this.address);
+        }
+
+        function Student(name,age,address,score,classNum){
+            Person.call(this,name,age,address);
+            this.score = score,
+            this.classNum = classNum
+        }
+
+        inherit(Student,Person);
+        Student.prototype.learning = function(){
+            console.log(this.name + " is learning");
+        }
+
+        var stu1 = new Student("Cookie",19,"HN");
+
+        stu1.learning();
+        stu1.online();
+        stu1.from();
+
+    </script>
+</body>
+</html>

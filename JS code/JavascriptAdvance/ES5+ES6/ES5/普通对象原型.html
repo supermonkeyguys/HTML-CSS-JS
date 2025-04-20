@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        var obj = {
+            name:"Cookie",
+            age:19
+        }
+
+        var p = Object.getPrototypeOf(obj)
+        console.log(p)
+        console.log(obj.__proto__)
+
+        function foo(){
+            console.log("I am Foo")
+        }
+
+        //将函数看成是一个普通对象时，他是具备__proto__(隐式原型)
+        console.log(foo.__proto__)//输出：ƒ () { [native code] }
+        console.log(Object.getPrototypeOf(foo))//输出：ƒ () { [native code] }
+
+        //将函数看成一个函数时,其时具备prototype的(显式原型)
+        //作用：用来构建对象时,给对象设置隐式原型
+        console.log(foo.prototype)
+        //对象没有prototype这种方法
+        // console.log(obj.prototype)
+
+        //普通对象
+        var newFoo = new foo()
+
+        console.log("foo.prototype:",foo.prototype)
+        console.log("newFoo.__proto__:",newFoo.__proto__)
+        console.log("newFoo.prototype:",newFoo.prototype)
+        console.log(foo.prototype === newFoo.prototype)
+        console.log(foo.prototype === newFoo.__proto__)
+
+
+    </script>
+</body>
+</html>

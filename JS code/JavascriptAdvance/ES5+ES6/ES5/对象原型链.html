@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        var obj = {
+            name:"Cookie",
+            age:18
+        }
+
+        obj.__proto__ = {
+            // message:"Hello 1"
+        }
+
+        obj.__proto__.__proto__ = {
+            message:"Hello 2"
+        }
+
+        console.log(obj.message)
+
+    </script>
+</body>
+</html> 

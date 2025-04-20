@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        
+        //箭头函数没有arguments
+        var bar = () =>{
+            //内部查找没有到上层作用域查找
+            //去全局没有
+            //window没有 -> 报错
+            // console.log(arguments)//报错
+        }
+
+        bar(11,12,13)
+
+        function foo(){
+            name = "foo"
+            var bar1 =  () => {
+                console.log(arguments)
+            }
+            bar1()
+        }
+
+        foo()
+
+    </script>
+
+</body>
+</html>
