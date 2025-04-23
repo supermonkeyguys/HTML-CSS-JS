@@ -1162,6 +1162,8 @@ Object.seal(obj)
 
 ## Javascript ES5中实现继承
 
+***任何对象都有自己的原型（隐式原型）***
+
 ### *1.对象和函数的原型（掌握）*
 
 Javascript当中每个对象都有一个特殊的内置属性[[prototype]]，这个特殊的对象可以指向另外一个对象
@@ -1583,16 +1585,537 @@ function Person(name,age,address){
 
 
 
+```javascript
+//后续新方法存在一定兼容问题
+//原型继承
+Object.setPrototypeOf(Subtype.prototype,Supertype.prototype)
+```
+
 
 
 ## Javascript ES6中实现继承
 
-1.对象的方法补充
+### 1.对象的方法补充
 
-2.原型继承关系图
+- **`instanceof`**：检查对象的原型链中是否包含某个构造函数的 `prototype` 属性。比如 `A instanceof B` ，是看 `A` 的原型链上是否能找到 `B.prototype` 。
+- **`isPrototypeOf`**：直接检查一个对象是否在另一个对象的原型链上。例如 `C.prototype.isPrototypeOf(D)` ，就是判断 `C.prototype` 是否在 `D` 的原型链中 。
 
-3.class方式定义类
+```javascript
+function createObject(type){
+    function f(){};
+    f.prototype = type;
+    return new f();
+}
 
-4.extend实现继承
+function inherit(Subtype,Supertype){
+    //后续新方法存在一定兼容问题
+    // Object.setPrototypeOf(Subtype.prototype,Supertype.prototype);
+    Subtype.prototype = createObject(Supertype.prototype);
+    Object.defineProperty(Subtype.prototype,"constructor",{
+        enumerable:false,
+        configurable:true,
+        writable:true,
+        value:Subtype
+    })
+}
 
-5.多态概念的理解
+var obj = {
+            name:"Cookie",
+            age:19
+        } 
+
+        var info = createObject(obj);
+        info.address = "HN";
+        info.intro = "HELLO";
+
+        //hasOwnProperty方法
+        console.log(info.hasOwnProperty("name"))//false 在当前对象上查找
+        //in方法
+        console.log("name" in info);//true 在原型和对象中查找
+        
+        console.log(info.hasOwnProperty("address"))
+        console.log("address" in info);
+        
+        //for in 方法 和in查找相同
+        for(var Element in info){
+            console.log(Element);
+        }
+
+        //instanceof
+        //用于检测构造函数(Person,Student类)的prototype
+        //是否出现在某个实例对象的原型链上
+        //判断对象与构造函数之间的关系
+        function Person(){};
+        function Student(){};
+        inherit(Student,Person)
+
+        var stu = new Student();
+        console.log(stu instanceof Student);
+        console.log(stu instanceof Person);
+        console.log(stu instanceof Object);
+        console.log(stu instanceof Array);
+        
+        console.log("-------------")
+        //isPrototypeOf
+        //用于检测某个对象, 是否出现在某个实例对象的原型链上
+        //判断对象与对象之间的继承
+        console.log(Student.prototype.isPrototypeOf(stu));
+        console.log(Person.prototype.isPrototypeOf(stu));
+        console.log(Object.prototype.isPrototypeOf(Person));
+```
+
+### 2.原型继承关系图
+
+***函数本身也是对象***
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\原型链继承关系.jpg)
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\原型继承关系简化图.png)
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\原型关系理解.png)
+
+
+
+### 3.class方式定义类
+
+#### ***构造函数的类方法（掌握）：***
+
+```javascript
+function Person(name,age){
+            this.name = name,
+            this.age = age
+        };
+
+        //添加Person原型上的方法也称为 实例方法(只能通过实例调用)
+        Person.prototype.online = function(){
+            console.log(this.name + " is online");
+        }
+        Person.prototype.leaving = function(){
+            console.log(this.name + " is leaving");
+        }
+
+        //添加在对象本身的方法称为 类方法
+        var names = ["Cookie" , "Popguys" , "Supermonkeyguys"];
+        Person.randomPerson = function(){
+            var randName = names[Math.floor(Math.random() * names.length)];
+            var randAge = Math.floor(Math.random() * 100);
+            return new Person(randName,randAge);
+        }
+
+        //实例对象
+        var  p1 = new Person("Popguys",18);
+        p1.online();
+
+        var p = Person.randomPerson();
+        console.log(p);
+```
+
+
+
+#### ***class的定义类（掌握）:***
+
+```javascript
+		//ES5中定义类
+        //function Person() {}
+        //ES6中定义类
+        //{key:value} -> 对象
+        //{表达式} -> 代码块
+        //{} -> 类的结构
+        class Person{
+
+        }
+        var p1 = new Person();
+        console.log(p1);
+        //另一种定义方法:表达式(了解)
+        var Student = class{
+
+        }
+        var foo = function(){
+
+        }
+        var stu1 = new Student();
+        console.log(stu1);
+```
+
+
+
+#### ***class类中定义构造方法和实例方法（掌握）***
+
+```javascript
+		//高内聚低耦合
+        class Person {
+            //类中的构造函数
+            //当我们通过new关键字调用一个Person类时, 默认调用class中的constructor方法
+            constructor(name,age){
+                this.name = name;
+                this.age = age;
+            }
+
+            //实例方法
+            //本质上是Person.prototype
+            online() {
+                console.log(this.name + " is online");
+            }
+            leaving() {
+                console.log(this.name + " is leaving");
+            }
+        }
+
+        var p1 = new Person("Cookie",19);
+
+        console.log(p1.name,p1.age);
+        p1.online();
+        p1.leaving();
+```
+
+
+
+#### ***类和构造函数的异同（掌握）***
+
+1.构造函数可以当作一个普通函数使用，而class定义的类则不能作为一个普通的函数进行调用
+
+
+
+
+
+**类的构造函数**
+
+1.每个类可以有一个自己的构造函数（方法），其是固定的为（constructor）
+
+2.使用new操作符时，操作一个类时会调用这个类的constructor
+
+3.每个类只能有一个constructor，如果包含多个，则会抛出异常
+
+
+
+#### ***new操作类时的具体操作（掌握）***
+
+1.在内存中创建一个空对象
+
+2.这个对象内部的[[prototype]]属性会被赋值为该类的prototype属性
+
+3.构造函数内部的this，会指向创建出来的新对象
+
+4.执行构造函数的内部代码（函数代码）
+
+5.如果构造函数没有返回非空对象，则返回创建出来的新对象
+
+
+
+**类和访问器的编写**
+
+```javascript
+var obj = {
+            name:"GG-bond"
+        }
+        //对象访问器定义(监听某个属性)
+        //方式一：
+        Object.defineProperty(obj,"name",{
+            configurable:true,
+            enumerable:true,
+            set:function() {
+
+            },
+            get:function() {
+
+            }
+        })
+
+        // 方式二
+        var obj1 = {
+            name:"Cookie",
+            //setter方法
+            set name(value){
+                this.name = value
+            },
+            //getter方法
+            get name(){
+                return this.name
+            }
+        }
+
+        class Person {
+            //程序员之间的约定, 以_开头的属性和方法, 是不在外界访问的
+            constructor(name,age){
+                this._name = name
+            }
+
+            set name(value) {
+                console.log("设置name")
+                this._name = value
+            }
+
+            get name() {
+                console.log("获取name")
+                return this._name
+            }
+        }
+
+        var p1 = new Person("Cookie",19);
+        p1.name = "Popguys"
+        console.log(p1.name)
+
+        var p2 = new Person("GG-bond",19);
+        p2.name = "tuang tuang tuang"
+        console.log(p2.name)
+
+        //应用场景
+        class Hunman{
+            constructor(x,y,height,weight){
+                this.x = x;
+                this.y = y;
+                this.height = height;
+                this.weight = weight;
+            }
+            get position(){
+                return {x:this.x,y:this.y}
+            }
+            get size(){
+                return {height:this.height,weight:this.weight}
+            }
+        }
+
+        var h1 = new Hunman(90,90,100,120);
+        console.log(h1.position);
+        console.log(h1.size);
+```
+
+
+
+#### ***类的静态方法（掌握）：***
+
+**静态函数中的 this 绑定到定义该静态函数的类**
+
+**在继承情况下，this会指向调用该静态函数的子类**
+
+```javascript
+function Person(name,age){
+            this.name = name,
+            this.age = age
+        };
+
+        //添加Person原型上的方法也称为 实例方法(只能通过实例调用)
+        Person.prototype.online = function(){
+            console.log(this.name + " is online");
+        }
+        Person.prototype.leaving = function(){
+            console.log(this.name + " is leaving");
+        }
+
+        //添加在对象本身的方法称为 类方法(静态方法)
+        var names = ["Cookie" , "Popguys" , "Supermonkeyguys"];
+        Person.randomPerson = function(){
+            var randName = names[Math.floor(Math.random() * names.length)];
+            var randAge = Math.floor(Math.random() * 100);
+            return new Person(randName,randAge);
+        }
+
+        //实例对象
+        var  p1 = new Person("Popguys",18);
+        p1.online();
+
+        var p = Person.randomPerson();
+        console.log(p);
+
+        class Human{
+            constructor(name,age){
+                this.name = name;
+                this.age = age;
+            }
+            //实例方法(本质上是添加在原型上)
+            moving(){
+                console.log(this.name + " is moving");
+            }
+            //this绑定->与调用相关
+            //静态方法只能通过类来调用
+            static randomPerson(){
+                console.log(this);//指向Human
+                var randomName = names[Math.floor(Math.random() * names.length)];
+                var randomAge = Math.floor(Math.random() * 100);
+                return new this(randomName,randomAge);//与下面写法效果相同，推荐上面的写法
+                // return new Hunman(randomName,randomAge);
+            }
+        }
+
+        var h1 = new Human("Cookie",20);
+        h1.moving();
+        // h1.randomPerson(); 静态方法不可通过实例调用
+        console.log(Human.randomPerson());
+```
+
+
+
+### 4.extend实现继承  
+
+```javascript
+class Person{
+            constructor(name,age,address){
+                this.name = name;
+                this.age = age;
+                this.address = address;
+            }
+
+            Greet(){
+                console.log(`Hello , I am ${this.name}`);
+            }
+            sayBye(stanger){
+                consoele.log(`Goodbye,see you next time ${stanger.name}`);
+            }
+        }
+
+        class Student extends Person {
+            constructor(name,age,address,score){
+                super(name,age,address);
+                this.score = score;
+            }
+
+            study(){
+                console.log(this.name + " is studying");
+            }
+        }
+
+        var stu1 = new Student("Cookie",19,"HN",100);
+        stu1.Greet();
+```
+
+
+
+**super关键字**
+
+可以执行super.method(...)来调用父类
+
+可以执行super(...)来调用一个父类的constructor（只能在constructor中使用）
+
+**注意：在子（派生）类的构造函数中使用this或者返回默认对象之前，必须先通过super调用父类的构造函数**
+
+**使用位置：1.子类的构造函数，2.实例方法，3.静态方法**
+
+**对父类函数重写**
+
+```javascript
+class Animal { 
+    constructor(name,age){
+        this.name = name;
+        this.age = age;
+    }
+	running() {
+        console.log("running");
+    }
+    eating() {
+        console.log("eating");
+    }
+    static sleep() {
+        console.log("static animal sleep");
+    }
+}
+
+class Dog extends Animal {
+    constructor(name,age,weight){
+        super(name,age);
+        this.weight = weight;
+    }
+    running() {
+        console.log(dog);
+        super.running();
+    }
+    static sleep() {
+        console.log("dog");
+    }
+}
+
+var dog = new Dog("Buls",7,91);
+dog.running();
+Dog.sleep();
+```
+
+
+
+**继承内置类**
+
+不仅仅可以继承自定义的类，还可以继承内置类（例如：Array等），主要使用目的是对内置类功能进行扩展
+
+```javascript
+//创建新类继承父类再扩展
+class HYArray extends Array {
+	get lastItem() {
+        return this[this.length - 1];
+    }
+    get firstItem(){
+        return this[0];
+    }
+}
+
+var arr = new HYArray(10,20,30);
+console.log(arr);
+console.log(arr.firstItem);
+console.log(arr.lastItem);
+//直接对原类扩展
+Array.prototype.lastItem = funtion() {
+    return this[this.length - 1];
+}
+```
+
+
+
+类的混入
+
+JS只支持单继承，只能有一个父类
+
+```javascript
+function mixClass1(baseClass){
+            return class extends baseClass {
+                flying() {
+                    console.log("flying");
+                }
+            }
+        }
+
+        function mixClass2(baseClass){
+            return class extends baseClass {
+                running() {
+                    console.log("running");
+                }
+            }
+        }
+
+        class Animal{
+
+        }
+
+        var bd = mixClass2(mixClass1(Animal));
+        var bird = new bd();
+        bird.flying();
+
+        class Bird extends mixClass2(mixClass1(Animal)) {
+
+        }
+
+        var birdp = new Bird();
+        birdp.running();
+```
+
+
+
+### 5.Babel的ES6转ES5
+
+***[深入理解class和extends原理](https://juejin.cn/post/7001025002287923207)***
+
+
+
+### 6.面向对象多态理解
+
+**继承是多态的前提**
+
+[***将 “不变的事物” 与 “可能改变的事物” Take apart***](https://segmentfault.com/a/1190000017452120)
+
+**为不同数据类型实体，提供统一接口**
+
+**不同的数据类型进行同一个操作，表现出不同的行为**
+
+
+
+
+
+
+
+7.ES6对象的增强

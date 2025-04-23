@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+        
+        function mixClass1(baseClass){
+            return class extends baseClass {
+                flying() {
+                    console.log("flying");
+                }
+            }
+        }
+
+        function mixClass2(baseClass){
+            return class extends baseClass {
+                running() {
+                    console.log("running");
+                }
+            }
+        }
+
+        class Animal{
+
+        }
+
+        var bd = mixClass2(mixClass1(Animal));
+        var bird = new bd();
+        bird.flying();
+
+        class Bird extends mixClass2(mixClass1(Animal)) {
+
+        }
+
+        var birdp = new Bird();
+        birdp.running();
+
+    </script>
+</body>
+</html>

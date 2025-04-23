@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        var obj = {
+            name:"GG-bond"
+        }
+        //对象访问器定义(监听某个属性)
+        //方式一：
+        Object.defineProperty(obj,"name",{
+            configurable:true,
+            enumerable:true,
+            set:function() {
+
+            },
+            get:function() {
+
+            }
+        })
+
+        // 方式二
+        var obj1 = {
+            name:"Cookie",
+            //setter方法
+            set name(value){
+                this.name = value
+            },
+            //getter方法
+            get name(){
+                return this.name
+            }
+        }
+
+        class Person {
+            //程序员之间的约定, 以_开头的属性和方法, 是不在外界访问的
+            constructor(name,age){
+                this._name = name
+            }
+
+            set name(value) {
+                console.log("设置name")
+                this._name = value
+            }
+
+            get name() {
+                console.log("获取name")
+                return this._name
+            }
+        }
+
+        var p1 = new Person("Cookie",19);
+        p1.name = "Popguys"
+        console.log(p1.name)
+
+        var p2 = new Person("GG-bond",19);
+        p2.name = "tuang tuang tuang"
+        console.log(p2.name)
+
+        //应用场景
+        class Hunman{
+            constructor(x,y,height,weight){
+                this.x = x;
+                this.y = y;
+                this.height = height;
+                this.weight = weight;
+            }
+            get position(){
+                return {x:this.x,y:this.y}
+            }
+            get size(){
+                return {height:this.height,weight:this.weight}
+            }
+        }
+
+        var h1 = new Hunman(90,90,100,120);
+        console.log(h1.position);
+        console.log(h1.size);
+
+    </script>
+</body>
+</html>

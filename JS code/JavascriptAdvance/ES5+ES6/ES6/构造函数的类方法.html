@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        function Person(name,age){
+            this.name = name,
+            this.age = age
+        };
+
+        //添加Person原型上的方法也称为 实例方法(只能通过实例调用)
+        Person.prototype.online = function(){
+            console.log(this.name + " is online");
+        }
+        Person.prototype.leaving = function(){
+            console.log(this.name + " is leaving");
+        }
+
+        //添加在对象本身的方法称为 类方法(静态方法)
+        var names = ["Cookie" , "Popguys" , "Supermonkeyguys"];
+        Person.randomPerson = function(){
+            var randName = names[Math.floor(Math.random() * names.length)];
+            var randAge = Math.floor(Math.random() * 100);
+            return new Person(randName,randAge);
+        }
+
+        //实例对象
+        var  p1 = new Person("Popguys",18);
+        p1.online();
+
+        var p = Person.randomPerson();
+        console.log(p);
+
+        class Human{
+            constructor(name,age){
+                this.name = name;
+                this.age = age;
+            }
+            //实例方法(本质上是添加在原型上)
+            moving(){
+                console.log(this.name + " is moving");
+            }
+            //this绑定->与调用相关
+            //静态方法只能通过类来调用
+            static randomPerson(){
+                console.log(this);//指向Human
+                var randomName = names[Math.floor(Math.random() * names.length)];
+                var randomAge = Math.floor(Math.random() * 100);
+                return new this(randomName,randomAge);
+                // return new Hunman(randomName,randomAge);
+            }
+        }
+
+        var h1 = new Human("Cookie",20);
+        h1.moving();
+        // h1.randomPerson(); 静态方法不可通过实例调用
+        console.log(Human.randomPerson());
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+        
+        class Person{
+            constructor(name,age,address){
+                this.name = name;
+                this.age = age;
+                this.address = address;
+            }
+
+            Greet(){
+                console.log(`Hello , I am ${this.name}`);
+            }
+            sayBye(stanger){
+                consoele.log(`Goodbye,see you next time ${stanger.name}`);
+            }
+        }
+
+        class Student extends Person {
+            constructor(name,age,address,score){
+                super(name,age,address);
+                this.score = score;
+            }
+
+            study(){
+                console.log(this.name + " is studying");
+            }
+        }
+
+        var stu1 = new Student("Cookie",19,"HN",100);
+        stu1.Greet();
+
+
+    </script>
+</body>
+</html>
