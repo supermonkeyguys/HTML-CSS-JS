@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+
+        function foo(name,age){
+            console.log(this,name,age);
+        };
+
+        //封装
+        function excuFn(thisArg,otherArgs,fn){
+            //获取thisArg, 并且确保是一个对象类型
+            thisArg = (thisArg === null || thisArg === undefined) ? window : Object(thisArg);
+
+            Object.defineProperty(thisArg,"fn", {
+                enumerable:false,
+                configurable:true,
+                value: fn
+            })
+            thisArg.fn(...otherArgs);
+
+            delete thisArg.fn;
+        }
+
+        Function.prototype.hyApply = function(thisArg,otherArgs) {
+            excuFn(thisArg,otherArgs,this);
+        }
+        Function.prototype.hyCall = function(thisArg,...otherArgs) {
+            excuFn(thisArg,otherArgs,this);
+        }
+
+        var obj = {name:"CC"};
+
+        foo.hyApply("GG",["Cookie",19]);
+        foo.hyCall(obj,"Popguys",19);
+        foo.hyApply(undefined,["Supermonkeyguys",20]);
+        foo.hyCall(null,"GG-bond",19);
+
+    </script>
+</body>
+</html>

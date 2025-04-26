@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <button>Button</button>
+    <button>Button</button>
+    <button>Button</button>
+    <button>Button</button>
+
+    <script>
+
+        //ES6之前
+        // const name = "Cookie";
+        // const age = 19;
+        // const height = 1.8;
+        // const info = "My name is" + name + ", age is " + age;
+
+        // //ES6之后
+        // const info1 = `My name is ${name}, age is ${age}`;
+
+        // function foo(...args){
+        //     console.log("arguments:",args);
+        // }
+
+        // //foo('模板字符串',name,age,height);
+        // foo`My name is ${name}, age is ${age}, height is ${height}`;
+
+        // function foo1(arg1 = 10,arg2 = 20){
+        //     //除默认参数之外的方法一
+        //     //arg1 = (arg1 === null || arg1 === undefined) ? 10 : arg1; 
+        //     //arg2 = (arg2 === null || arg2 === undefined) ? 20 : arg2;
+        //     //方法二
+        //     //arg1 = arg1 ?? 10;
+        //     //arg2 = arg2 ?? 20;
+        //     console.log(arg1,arg2);
+        // }
+
+        // foo1();
+        // foo1("","");
+        // foo1(false,true);
+
+        const obj = {
+            naem:"Cookie",
+            age:19
+        }
+
+        const info = {
+            ...obj,
+            address:"HN",
+            id:4399
+        }
+        console.log(info);
+
+    </script>
+</body>
+</html>

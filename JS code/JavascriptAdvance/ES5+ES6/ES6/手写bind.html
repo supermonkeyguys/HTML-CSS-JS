@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+
+        function foo(name,age,height,address){
+            console.log(this,name,age,height,address);
+        };
+
+        Function.prototype.hyBind = function(thisArg,...otherArgs){
+            thisArg = (thisArg === null || thisArg === undefined)? window : Object(thisArg);
+            Object.defineProperty(thisArg,"fn", {
+                enumerable: false,
+                configurable:true,
+                writabe:false,
+                value:this
+            })
+            
+            return (...newArgs) => {
+                var allArgs = otherArgs.concat(newArgs);
+                // var allArgs = [...otherArgs,...newArgs];
+                thisArg.fn(...allArgs);
+            }
+        }
+
+        var newFoo = foo.hyBind("CC","Cookie",19);
+        newFoo(1.8,"海南省");
+
+
+
+    </script>
+</body>
+</html>

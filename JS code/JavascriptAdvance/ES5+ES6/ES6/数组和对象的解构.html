@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        var names = ["Cookie","Popguys","Supermonkeyguys",undefined];
+        //基本使用
+        // var [name1, name2, name3] = names;
+        // console.log(name1,name2,name3);
+
+        //严格顺序
+        // var [name1, ,name3] = names;
+        // console.log(name1,name3);
+
+        //剩余参数解构
+        // var [name1,name2,...restName] = names;
+        // console.log(name1,name2,restName);
+
+        //默认值 当数组内元素为undefined时, 可以在解构时进行赋值
+        //如果已经有初始值, 再进行赋值操作则无效
+        // var [name1, name2, name3, name4 = "GG-bond"] = names;
+        // console.log(name1,name2,name3,name4);
+
+        var obj = {name:"Cookie",age:19,address:"HN"};
+        // var {name,age,address} = obj; //解构变量名需和对象内部key名相同
+        // console.log(name,age,address)
+
+        //对象解构没有顺序, 而是根据key
+        // var {age,address,name} = obj;
+        // console.log(age,address,name);
+
+        //对变量重命名
+        // var {name:myName,age:myAge,address:myAddress} = obj;
+        // console.log(myName,myAge,myAddress)//新变量
+
+        //赋值规则和数组相同
+        // var {name:myName,age:myAge,address:myAddress = "Dingan"} = obj;
+        // console.log(myName,myAge,myAddress);
+
+        //剩余参数接受
+        // var {name,...restObj} = obj;
+        // console.log(name,restObj);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+        class Shape {
+            getArea() {};
+        }
+
+        class Rectangle extends Shape {
+            constructor(width,height){
+                super();
+                this.width = width;
+                this.height = height;
+            }
+            
+            getArea() {
+                return this.width * this.height;
+            }
+        }
+
+        class Cricle extends Shape {
+            constructor(radius){
+                super();
+                this.radius = radius;
+            }
+
+            getArea() {
+                return this.radius * this.radius * Math.PI;
+            }
+        }
+
+        var rect1 = new Rectangle(100,200);
+        var cric1 = new Cricle(100);
+        console.log(rect1.getArea());
+        console.log(cric1.getArea());
+
+        function getShapeArea(shape) {
+            console.log(shape.getArea())
+        }
+
+        getShapeArea(cric1);
+
+    </script>
+</body>
+</html>

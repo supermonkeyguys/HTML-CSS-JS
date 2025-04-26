@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        var name = "Cookie";
+        var age = 19;
+
+        var key = "address" + "city";
+
+        var obj = {
+            //属性的增强
+            name, //本质上是name:name
+            age,  //age:age
+            //注意箭头函数不绑定this
+            eating: () => {
+                console.log(this);
+            },
+            running: function() {
+                console.log(this);
+            },
+            //方法的增强（非箭头函数）写法与类的有些相似
+            swimming() {
+                console.log(this);
+            },
+            //计算属性名
+            [key]: "HN" //address city
+        }
+
+        obj.running();
+        obj.eating();
+        obj.swimming();
+
+        console.log(obj.addresscity);
+
+    </script>
+</body>
+</html>

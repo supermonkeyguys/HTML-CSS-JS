@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        function foo(name,age){
+            console.log(this,name,age);
+        };
+        //对象中的某些属性和方法是来自Function.prototype
+        console.log(foo.__proto__ === Function.prototype); //true
+
+        foo.apply("Cookie",["Popguys",19]);
+        console.log(Function.prototype.call);
+        console.log(Function.prototype.apply);
+        console.log(Function.prototype.apply === foo.apply);
+
+        Function.prototype.info = "Hello my friend!";
+        console.log(foo.info);
+        Function.prototype.bar = function() {
+            console.log("bar function excution");
+        }
+
+        foo.bar();
+
+    </script>
+</body>
+</html>

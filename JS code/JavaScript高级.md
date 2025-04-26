@@ -2112,10 +2112,465 @@ function mixClass1(baseClass){
 
 **不同的数据类型进行同一个操作，表现出不同的行为**
 
+```Javascript
+class Shape {
+            getArea() {};
+        }
+
+        class Rectangle extends Shape {
+            constructor(width,height){
+                super();
+                this.width = width;
+                this.height = height;
+            }
+            
+            getArea() {
+                return this.width * this.height;
+            }
+        }
+
+        class Cricle extends Shape {
+            constructor(radius){
+                super();
+                this.radius = radius;
+            }
+
+            getArea() {
+                return this.radius * this.radius * Math.PI;
+            } 
+        }
+
+        var rect1 = new Rectangle(100,200);
+        var cric1 = new Cricle(100);
+        console.log(rect1.getArea());
+        console.log(cric1.getArea());
+
+        function getShapeArea(shape) {
+            console.log(shape.getArea())
+        }
+
+        getShapeArea(cric1);
+```
 
 
 
+### 7.ES6对象的增强
+
+**字面量增强（语法糖）**
+
+```javascript
+var name = "Cookie";
+        var age = 19;
+
+        var key = "address" + "city";
+
+        var obj = {
+            //属性的增强
+            name, //本质上是name:name
+            age,  //age:age
+            //注意箭头函数不绑定this
+            eating: () => {
+                console.log(this);
+            },
+            running: function() {
+                console.log(this);
+            },
+            //方法的增强（非箭头函数）写法与类的有些相似
+            swimming() {
+                console.log(this);
+            },
+            //计算属性名
+            [key]: "HN" //address city
+        }
+
+        obj.running();
+        obj.eating();
+        obj.swimming();
+
+        console.log(obj.addresscity);
+```
 
 
 
-7.ES6对象的增强
+***数组和对象的解构以及应用（掌握）***
+
+```javascript
+var names = ["Cookie","Popguys","Supermonkeyguys",undefined];
+        //基本使用
+        // var [name1, name2, name3] = names;
+        // console.log(name1,name2,name3);
+
+        //严格顺序
+        // var [name1, ,name3] = names;
+        // console.log(name1,name3);
+
+        //剩余参数解构
+        // var [name1,name2,...restName] = names;
+        // console.log(name1,name2,restName);
+
+        //默认值 当数组内元素为undefined时, 可以在解构时进行赋值
+        //如果已经有初始值, 再进行赋值操作则无效
+        // var [name1, name2, name3, name4 = "GG-bond"] = names;
+        // console.log(name1,name2,name3,name4);
+
+        var obj = {name:"Cookie",age:19,address:"HN"};
+        // var {name,age,address} = obj; //解构变量名需和对象内部key名相同
+        // console.log(name,age,address)
+
+        //对象解构没有顺序, 而是根据key
+        // var {age,address,name} = obj;
+        // console.log(age,address,name);
+
+        //对变量重命名
+        // var {name:myName,age:myAge,address:myAddress} = obj;
+        // console.log(myName,myAge,myAddress)//新变量
+
+        //赋值规则和数组相同
+        // var {name:myName,age:myAge,address:myAddress = "Dingan"} = obj;
+        // console.log(myName,myAge,myAddress);
+
+        //剩余参数接受
+        // var {name,...restObj} = obj;
+        // console.log(name,restObj);
+```
+
+
+
+***函数对象的原型和Function的关系（掌握）:***
+
+```javascript
+		function foo(name,age){
+            console.log(this,name,age);
+        };
+        //对象中的某些属性和方法是来自Function.prototype
+        console.log(foo.__proto__ === Function.prototype); //true
+
+        foo.apply("Cookie",["Popguys",19]);
+        console.log(Function.prototype.call);
+        console.log(Function.prototype.apply);
+        console.log(Function.prototype.apply === foo.apply);
+
+        Function.prototype.info = "Hello my friend!";
+        console.log(foo.info);
+        Function.prototype.bar = function() {
+            console.log("bar function excution");
+        }
+
+        foo.bar();
+```
+
+
+
+***手写apply-call函数实现和抽取封装（掌握）：***
+
+```Javascript
+		function foo(name,age){
+            console.log(this,name,age);
+        };
+
+        //封装
+        function excuFn(thisArg,otherArgs,fn){
+            //获取thisArg, 并且确保是一个对象类型
+            thisArg = (thisArg === null || thisArg === undefined) ? window : Object(thisArg);
+
+            Object.defineProperty(thisArg,"fn", {
+                enumerable:false,
+                configurable:true,
+                value: fn
+            })
+            //利用隐式绑定
+            thisArg.fn(...otherArgs);
+
+            delete thisArg.fn;
+        }
+
+        Function.prototype.hyApply = function(thisArg,otherArgs) {
+            excuFn(thisArg,otherArgs,this);
+        }
+        Function.prototype.hyCall = function(thisArg,...otherArgs) {
+            excuFn(thisArg,otherArgs,this);
+        }
+
+        var obj = {name:"CC"};
+
+        foo.hyApply("GG",["Cookie",19]);
+        foo.hyCall(obj,"Popguys",19);
+        foo.hyApply(undefined,["Supermonkeyguys",20]);
+        foo.hyCall(null,"GG-bond",19);
+```
+
+
+
+***bind（掌握）：***
+
+```javascript
+function foo(name,age,height,address){
+            console.log(this,name,age,height,address);
+        };
+
+        Function.prototype.hyBind = function(thisArg,...otherArgs){
+            thisArg = (thisArg === null || thisArg === undefined)? window : Object(thisArg);
+            Object.defineProperty(thisArg,"fn", {
+                enumerable: false,
+                configurable:true,
+                writabe:false,
+                value:this
+            })
+            
+            return (...newArgs) => {
+                var allArgs = otherArgs.concat(newArgs);
+                // var allArgs = [...otherArgs,...newArgs];
+                thisArg.fn(...allArgs);
+                //不delete的reason
+                //在后续返回新函数要调用
+            }
+        }
+
+        var newFoo = foo.hyBind("CC","Cookie",19);
+        newFoo(1.8,"海南省");
+```
+
+
+
+# ES6~ES13新特性
+
+## let-const
+
+### **基本使用和注意事项(掌握)**
+
+**let用法与var基本无异，let，const无作用域提升**
+
+**const保存的数据一旦被赋值，就不可更改但赋值如果是引用类型，则可以通过引用对象找到对应的对象来修改对象内容**
+
+```javascript
+let name = "Cookie";
+name = "Supermonkeyguys";
+
+const age = 20;
+//age = 31; //错误
+const info = {
+	name:"popguys",
+	age:20
+}
+
+//info = {}; //错误
+info.age = 21;
+```
+
+**var的陷阱**
+
+```javascript
+var x = 10;
+function foo(){
+	console.log(x);//undefined
+	var x = 100;
+}
+
+foo();
+```
+
+**let/const没有作用域提升和暂时性死区**
+
+var声明变量有作用域提升
+
+**在执行上下文内词法环境记录被创建之初，变量在此时就会被创建出来了，但是此时是处于不可访问状态（暂时性死区TDZ），所以let/const不能说是有作用域提升的（wiki百科，变量需要能被访问到才能说是租用与提升：同var）**
+
+```javascript
+console.log(a); //undefined TDZ-b,c
+console.log(b);	//TDZ-b,c
+console.log(c);	//TDZ-b,c
+var a = 10; //TDZ-b,c
+let b = 20;	//TDZ-c
+const c = 30;
+```
+
+#### **块级作用域**
+
+在ES5之前，只有全局和函数会形成自己的作用域
+
+**但在ES6之后，let/const/function/class声明的变量都会具有块级作用域**
+
+**函数虽然拥有块级作用域，但是外部依旧可以访问**（引擎内部会对函数的声明进行特殊处理，可以像var一样在外访问）
+
+```javascript
+
+{
+	let name = "Cookie";
+    let age = "19";
+	const ID = 666;
+    class Person{};
+    function foo(){
+        console.log(name);
+    }
+}
+
+//console.log(name) //报错undefined
+//let stu = new Person() //报错undefined
+foo();
+//函数 foo() 虽然定义在块内，但函数作用域可以捕获外层的块级变量（闭包特性）
+//因此 foo() 内部能正常访问 name，执行时会输出 "Cookie" 
+```
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\词法环境记录.png)
+
+#### **let/cosnt块级作用域应用场景**
+
+**词法环境会记录每次函数内部关联到的值**
+
+<img src="C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\let-const的应用场景.png" style="zoom: 200%;" />
+
+```html
+ <button>Button</button>
+    <button>Button</button>
+    <button>Button</button>
+    <button>Button</button>
+
+    <script>
+
+        const buttonElements = document.querySelectorAll('button');
+        //闭包变体方案，利用DOM对象属性存储数据
+        // for(var i = 0 ; i < buttonElements.length ; i++ ){
+        //     const btEl = buttonElements[i];
+        //     btEl.index = i;
+            
+        //     btEl.onclick = function(){
+        //         console.log(`I am button ${this.index}`);
+        //     }
+        // }
+		//块级作用域 + 闭包捕获i
+        for(let i = 0 ; i < buttonElements.length ; i ++ ){
+            const btEl = buttonElements[i];
+            btEl.onclick = function(){
+                console.log(`I am button ${i}`);
+            }
+        }
+
+
+    </script>
+```
+
+
+
+#### let-const-var在开发中的选择（掌握）
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\let-const-var开发中的选择.png)
+
+
+
+## 模板字符串（掌握）
+
+#### ***标签模板字符串的用法和应用（掌握）***
+
+```javascript
+//ES6之前
+const name = "Cookie";
+const age = 19;
+const height = 1.8;
+const info = "My name is" + name + ", age is " + age;
+
+//ES6之后
+const info1 = `My name is ${name}, age is ${age}`;
+
+function foo(...args){
+    console.log("arguments：${arg}");
+}
+
+//foo('模板字符串',name,age,height);
+foo`My name is ${name}, age is ${age}, height is ${height}`;
+//模板字符串被拆分，第一个元素是数组，是被模板字符串拆分的字符串组合
+//后面元素是模板块符串传入内容
+```
+
+#### ***默认参数的用法和注意事项（掌握）***
+
+**默认参数不会对null进行处理**
+
+具体使用根据实际需求(可能不需要对null进行处理)
+
+**语法规范：给默认参数的参数写在最后面，但在剩余参数之前（参数匹配数据顺序）**
+
+**tips:**
+
+有默认参数的形参**不会计入arguments的length之内**（并且后面所有参数都不会计算在length之内）
+
+```javascript
+function foo1(arg1 = 10,arg2 = 20){
+	//除默认参数之外的方法一
+    //arg1 = (arg1 === null || arg1 === undefined) ? 10 : arg1; 
+    //arg2 = (arg2 === null || arg2 === undefined) ? 20 : arg2;
+    //方法二
+    //arg1 = arg1 ?? 10;
+    //arg2 = arg2 ?? 20;
+    console.log(arg1,arg2);
+}
+
+foo();
+foo("","");
+foo(false,true);
+```
+
+
+
+#### ***默认参数和对象解构的结合（掌握）***
+
+```javascript
+function foo({name = "None" , age = 0 } = {}){
+	console.log(name,age);
+}
+
+foo();
+```
+
+
+
+#### ***箭头函数的额外强调（掌握）***
+
+箭头函数**没有显示原型prototype**，不能够作为构造函数来使用new对象
+
+箭头函数**不绑定this，arguments，super参数** 
+
+```javascript
+let foo = () => {};
+
+const f = new foo() //报错
+```
+
+
+
+#### ***展开语法的基本使用（掌握）***
+
+使用场景：
+
+**函数调用**
+
+```javascript
+function foo(arg1,arg2,...rest) {}
+const names = ["Cookie","Popguys","GG-bond"];
+foo(...names);
+```
+
+**数组构建**
+
+```javascript
+var names1 = ["Cookie","Popguys"];
+const names = [...names1,"GG-bond"];
+```
+
+**构建对象字面量**
+
+```javascript
+const obj = {
+	naem:"Cookie",
+	age:19
+}
+
+const info = {
+	...obj,
+	address:"HN",
+	id:4399
+}
+```
+
+
+
+## 对象的引用赋值-浅拷贝-深拷贝（掌握）
