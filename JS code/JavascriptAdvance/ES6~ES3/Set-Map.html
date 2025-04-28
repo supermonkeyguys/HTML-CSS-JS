@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+        const set = new Set();
+
+        set.add(20);
+        set.add(30);
+        set.add({name:"Cookie",age:19});
+        set.add(91);
+        set.add(20);
+        set.add("GG");
+        console.log(set);
+
+        const names = ["Cookie","Popguys","Supermonkeyguys","Cookie"];
+        const setNames = new Set(names); //添入可迭代对象
+        console.log(setNames);
+
+    </script>
+</body>
+</html>

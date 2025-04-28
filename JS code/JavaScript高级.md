@@ -2573,4 +2573,195 @@ const info = {
 
 
 
-## 对象的引用赋值-浅拷贝-深拷贝（掌握）
+## 对象的引用赋值-浅拷贝-深拷贝（掌握） 
+
+### **引用赋值**：
+
+**在Javascript中，当把一个对象赋值给变量时，实际上实在赋值该对象在内存中的引用，而不是创建一个新的副本**
+
+```javascript
+const obj = {
+	name："Cookie",
+    age:18,
+    height:1.8
+}
+
+const info = obj;
+//在info中修改值时也会修改obj
+//两个值共有一个共同的指针指向堆内存
+```
+
+### **浅拷贝（Shallow Copy）：**
+
+**概念：**
+
+**只复制对象的第一层属性**
+
+**对于基本类型（字符串，数字等）：复制值**
+
+**对于引用类型（对象，数组等）：复制引用（内存地址）**
+
+```javascript
+	//**利用展开运算符**
+	//此时拷贝会在内存中开辟一个新的空间存储info，创建一个新的副本
+	//而不像先前两个对象共享一个相同的指针
+	const obj = {
+            name:"Cookie",
+            age:19,
+            height:1.8,
+            friend:{
+                name:"Popguys",
+                age:19
+            }
+        }
+
+        const info = {
+            ...obj
+        }
+        info.name = "Popguys";
+        console.log(info.name);//Popguys
+        console.log(obj.name);//Cookie
+
+        info.friend.name = "GG-bond"
+
+        console.log(obj.friend.name)//GG-bond
+```
+
+![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\浅拷贝detail.png)
+
+
+
+### **深拷贝（Deep Copy）：**
+
+**概念：**
+
+**递归复制对象的所有层级**
+
+**完全独立的新对象，与原对象无任何引用关系**
+
+```javascript
+//JSON方法（简单但有一定的局限性）
+const deepCopy = JSON.parse(JSON.stringify(obj));
+
+//递归函数调用
+function deepClone(obj){
+    if(obj === null || typeof obj !== 'object')return obj;
+    const clone = Array.isArray(obj) ? [] : {};
+    for(let key in obj){
+        if(obj.hasOwnProperty(key)){
+            clone[key] = deepClone(obj[key]);
+        }
+    }
+    return clone;
+}
+```
+
+
+
+### 数值表示
+
+ES6中规范了二进制和八进制的写法
+
+```javascript
+const num1 = 100;
+const num2 = 0b100; //二进制
+const num3 = 0o100;	//八进制
+const num4 = 0x100;	//十六进制
+
+//较长的数字表示
+const num5 = 100_000_000_000
+```
+
+
+
+## Symbol对象属性的痛点和Symbol的用法
+
+Why we need Symbol ？
+
+在ES6前，对象属性名都是以字符串形式，有时候很容易造成**属性名冲突**
+
+在冲突时继续赋值可能会**覆盖原有属性**
+
+**Symbol 是 ES6 引入的一种新的原始数据类型，表示独一无二的值。**
+
+### ***Symbol基本使用（掌握）***
+
+```javascript
+const sym1 = Symbol();
+const sym2 = Symbol('description');
+console.log(sym1 === sym2) // false - 每个Symbol都是唯一的
+
+const name = Symbol();
+const height = Symbol();
+const obj = {age: 19};
+const info = {
+	[name]:"Cookie",
+	// [obj]:20 //对象不能作为Key
+}
+info[height] = 1.8;
+console.log(info);
+```
+
+
+
+### *Symbol痛点（掌握）*
+
+#### 访问困难
+
+```javascript
+const obj = {
+    [Symbol('key')]:'value'
+};
+//无法通过常规方式获取
+Object.keys(obj);
+Object.getOwnPropertyNames(obj);
+//专门方法
+const symbols = Object.getOwnPropertySymbols(obj);
+for(const key of symbolKeys){
+    console.log(obj[key]);
+}
+```
+
+#### JSON序列化问题
+
+```javascript
+const obj = {
+	[Symbol('data')]:'secret',
+	name:'test'
+};
+
+JSON.stringify(obj)// '{"name":"test"}' - Symbol属性被忽略
+```
+
+#### 无法隐式转换
+
+```javascript
+const sym = Symbol('test');
+console.log(sym + ' string')//报错
+console.log(`${sym}`);
+```
+
+
+
+### Symbol额外补充
+
+#### 相同值的Symbol
+
+**通过Symbol.for方法**
+
+**通过Symbol.keyFor方法获取对应key**
+
+```javascript
+const s1 = Symbol("ccc");
+console.log(s1.description);
+const s2 = Symbol(s1.description);
+console.log(s1 === s2); //false
+
+const s3 = Symbol.for("aaa");
+const s4 = Symbol.for("aaa");
+console.log(s3 === s4); //true
+
+console.log(Symbol.keyFor(s3));
+console.log(Symbol.keyFor(s4));
+```
+
