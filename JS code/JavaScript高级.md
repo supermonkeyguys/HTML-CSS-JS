@@ -2765,3 +2765,45 @@ console.log(Symbol.keyFor(s3));
 console.log(Symbol.keyFor(s4));
 ```
 
+
+
+## Set-Map
+
+### **基本使用和应用场景**
+
+**Set:**
+
+**常用方法**
+
+```javascript
+const set = new Set();
+
+set.size()； //返回set中元素的个数
+set.add(value); //添加摸个元素，返回Set对象本身
+set.delete(value); //从set中删除和这个值相等的元素，返回boolean类型
+set.has(value); //判断set中是否在存在某个元素，返回boolean类型
+set.claer(); //清空set中所有的元素，没有返回值
+set.forEach(callback,[,thisArg]); //通过forEach遍历set
+
+//set支持for of 方法
+```
+
+**数组自动去重**
+
+```javascript
+const set = new Set();
+
+        set.add(20);
+        set.add(30);
+        set.add({name:"Cookie",age:19});
+        set.add(91);
+        set.add(20);
+        set.add("GG");
+        console.log(set);
+		
+		//应用场景（数组去重）
+        const names = ["Cookie","Popguys","Supermonkeyguys","Cookie"];
+        const setNames = new Set(names); //添入可迭代对象
+        console.log(setNames);
+```
+
