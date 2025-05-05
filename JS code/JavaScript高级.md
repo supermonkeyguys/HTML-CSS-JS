@@ -2334,9 +2334,11 @@ function foo(name,age,height,address){
 
 # ES6~ES13新特性
 
-## let-const
+## ES6
 
-### **基本使用和注意事项(掌握)**
+### let-const
+
+#### **基本使用和注意事项(掌握)**
 
 **let用法与var基本无异，let，const无作用域提升**
 
@@ -2457,7 +2459,7 @@ foo();
 
 
 
-## 模板字符串（掌握）
+### 模板字符串（掌握）
 
 #### ***标签模板字符串的用法和应用（掌握）***
 
@@ -2573,9 +2575,9 @@ const info = {
 
 
 
-## 对象的引用赋值-浅拷贝-深拷贝（掌握） 
+### 对象的引用赋值-浅拷贝-深拷贝（掌握） 
 
-### **引用赋值**：
+#### **引用赋值**：
 
 **在Javascript中，当把一个对象赋值给变量时，实际上实在赋值该对象在内存中的引用，而不是创建一个新的副本**
 
@@ -2591,7 +2593,7 @@ const info = obj;
 //两个值共有一个共同的指针指向堆内存
 ```
 
-### **浅拷贝（Shallow Copy）：**
+#### **浅拷贝（Shallow Copy）：**
 
 **概念：**
 
@@ -2631,7 +2633,7 @@ const info = obj;
 
 
 
-### **深拷贝（Deep Copy）：**
+#### **深拷贝（Deep Copy）：**
 
 **概念：**
 
@@ -2658,7 +2660,7 @@ function deepClone(obj){
 
 
 
-### 数值表示
+#### 数值表示
 
 ES6中规范了二进制和八进制的写法
 
@@ -2674,7 +2676,7 @@ const num5 = 100_000_000_000
 
 
 
-## Symbol对象属性的痛点和Symbol的用法
+### Symbol对象属性的痛点和Symbol的用法
 
 Why we need Symbol ？
 
@@ -2684,7 +2686,7 @@ Why we need Symbol ？
 
 **Symbol 是 ES6 引入的一种新的原始数据类型，表示独一无二的值。**
 
-### ***Symbol基本使用（掌握）***
+#### ***Symbol基本使用（掌握）***
 
 ```javascript
 const sym1 = Symbol();
@@ -2704,9 +2706,9 @@ console.log(info);
 
 
 
-### *Symbol痛点（掌握）*
+#### *Symbol痛点（掌握）*
 
-#### 访问困难
+##### 访问困难
 
 ```javascript
 const obj = {
@@ -2722,7 +2724,7 @@ for(const key of symbolKeys){
 }
 ```
 
-#### JSON序列化问题
+##### JSON序列化问题
 
 ```javascript
 const obj = {
@@ -2733,7 +2735,7 @@ const obj = {
 JSON.stringify(obj)// '{"name":"test"}' - Symbol属性被忽略
 ```
 
-#### 无法隐式转换
+##### 无法隐式转换
 
 ```javascript
 const sym = Symbol('test');
@@ -2743,9 +2745,9 @@ console.log(`${sym}`);
 
 
 
-### Symbol额外补充
+#### Symbol额外补充
 
-#### 相同值的Symbol
+相同值的Symbol
 
 **通过Symbol.for方法**
 
@@ -2767,9 +2769,9 @@ console.log(Symbol.keyFor(s4));
 
 
 
-## Set-Map
+### Set-Map
 
-### **基本使用和应用场景**
+**基本使用和应用场景**
 
 **Set:**
 
@@ -2807,3 +2809,712 @@ const set = new Set();
         console.log(setNames);
 ```
 
+
+
+**WeakSet：**
+
+特性（和Set区别）：
+
+1.只能存放对象类型
+
+2.对对象都是弱引用
+
+```javascript
+let obj1 = {
+	name:"CCB"
+}
+const weakSet = new WeakSet();
+weakSet.add({name:"Cookie"});
+weakSet.add(obj1);
+
+//常见方法
+add(value);
+delete(value);
+has(value);
+
+//WeakSet不可遍历
+
+//应用场景（少见）
+const pWeakSet = new WeakSet();
+        class Person {
+            constructor() {
+                pWeakSet.add(this);
+            }
+
+            running() {
+                if(!pWeakSet.has(this)) {
+                    console.log("Type error");
+                    return;
+                }
+                console.log("running~");
+            }
+        }
+
+        const p = new Person();
+        p.running();
+        const runFn = p.running;
+        runFn();
+```
+
+
+
+**Map**
+
+```javascript
+const map = new Map();
+
+map.size(); //返回元素个数
+map.set(key,value); //根据key获取Map中的value
+map.has(key); //判断是否包含一个key，返回boolean类型
+map.delete(value); //根据key删除一个键值对，返回boolean类型
+map.clear(); //清空所有元素
+map.forEach(callback,[,thisArg]); //遍历Map
+
+//可以使用for of 遍历（可迭代对象）
+```
+
+
+
+**WeakMap**
+
+特性（和Map的区别）：
+
+WeakMap的key只接受对象类型
+
+WeakMap的key对对象的引用是弱引用
+
+```javascript
+let obj1 = {
+	name:"CCB"
+}
+const weakMap = new WeakSet();
+weakSet.add({name:"Cookie"});
+weakSet.add(obj1);
+
+//常见方法
+add(value);
+delete(value);
+has(value);
+
+//WeakSet不可遍历
+
+//应用场景
+const targetMap = new WeakMap();
+function getDep(target,key){
+    let depsMap = targetMap.get(target);
+    if(!depsMap){
+        depsMap = new Map();
+        targetMap.set(target,depsMap);
+    }
+    
+    let dep = depsMap.get(key);
+    if(!dep) {
+        dep = new Dep();
+        depsMap.set(key,dep);
+    }
+    return dep;
+}
+```
+
+
+
+## ES7~ES13
+
+### ES8
+
+**字符串填充方法：**
+
+**padStart，padEnd**
+
+```javascript
+const minute = "15".padStart(2,"0");
+const second = "6".padStart(2,"0");
+
+console.log(`${minute}:${second}`);
+
+const minute = "15".padStart(2,"0");
+const second = "6".padStart(2,"0");
+
+console.log(`${minute}:${second}`);
+
+let cardNumber = "9191917878CCB4321";
+const sliceNumber = cardNumber.slice(-4);
+cardNumber = sliceNumber.padStart(cardNumber.length,"*");
+const cardEl = document.querySelector(".card");
+cardEl.textContent = cardNumber;
+```
+
+**关于Object**
+
+- **参数**：`obj` - 要获取属性描述符的对象
+- **返回值**：一个对象，包含所有自身属性的描述符对象
+
+```javascript
+Object.getOwnPropertyDescriptors(obj)
+```
+
+
+
+### ES10
+
+**flat，flatMap**
+
+```javascript
+//将一个数组按照制定深度遍历，将遍历到的子数组或者元素返回生成一个新数组
+        const nums = [10,20,[111,222],[[213,119],[980,763]]];
+        const newNums1 = nums.flat(1);
+        console.log(newNums1); //[10, 20, 111, 222, Array(2), Array(2)]
+        const newNums2 = nums.flat(2);
+        console.log(newNums2); //[10, 20, 111, 222, 213, 119, 980, 763]
+
+        const message = [
+            "Hello World",
+            "Hello Hainan"
+        ]
+
+        //字符串拆解
+        const newInfos = [];
+        for(const item of message){
+            let tempMessage = item.split(" ");
+            for(const newItem of tempMessage){
+                newInfos.push(newItem);    
+            }
+        }
+        console.log(newInfos);
+    
+        let newInfos1 = [];
+        const newMessage = message.map(item => item.split(" "));
+        newInfos1 = newMessage.flat(1);
+        console.log(newInfos1);
+
+        let finalMessage = message.flatMap(item => item.split(" "));
+        console.log(finalMessage);
+```
+
+**fromEntries，trim**
+
+`Object.fromEntries()` 是 静态方法，用于将键值对列表转换为对象。`trim()` 是字符串方法，用于去除字符串两端的空白字符。
+
+```javascript
+//参数：一个可迭代对象（如数组），包含键值对
+//返回值：由这些键值对组成的新对象
+Object.fromEntries(iterable);
+
+const params = new URLSearchParams('name=Alice&age=25');
+const obj = Object.fromEntries(params);
+
+console.log(obj); // { name: "Alice", age: "25" }
+
+//返回值：新字符串，去除了两端空白字符
+str.trim();
+const str = '   Hello World!   ';
+console.log(str.trim()); // "Hello World!"
+
+const str = '   Hello   ';
+console.log(str.trimStart()); // "Hello   "
+
+const str = '   Hello   ';
+console.log(str.trimEnd()); // "   Hello"
+```
+
+
+
+### ES11
+
+**BigInt和空值合并运算符运用（掌握）**
+
+```javascript
+//能安全表示的最大数字，再大可能会出错
+console.log(Number.MAX_SAFE_INTEGER);//9007199254740991
+//末尾加上n即可
+const num1 = 9007199254740992n
+console.log(num1);
+
+const p = false;
+//遇到null和undefined不返回
+const result = p ?? "默认值"
+console.log(result);
+```
+
+
+
+可选链+其他知识补充
+
+```javascript
+const obj = {
+    name:"Cookie",
+    friend: {
+        name:"Popguys",
+        running:function() {
+            console.log("running");
+        }
+    }
+}
+
+//无法判断对象是否有这个函数，容易报错
+obj.friend.running()；
+//if判断过于麻烦
+if(obj.friend && obj.friend.running)obj.friend.running();
+
+//可选链（optional chain），（?.）短路返回值为undefined
+obj?.friend?.running?.();
+
+//获取全局对象
+console.log(globalThis)
+console.log(this)//浏览器上
+console.log(global)//node上
+
+//for..in标准化
+//遍历key
+```
+
+
+
+### ES12
+
+FinalizationRegistry
+
+`FinalizationRegistry` 是 ES2021 (ES12) 引入的一个 API，它允许开发者注册回调函数，当对象被垃圾回收时执行这些回调。
+
+**基本概念**
+
+`FinalizationRegistry` 提供了一种方式来观察对象何时被垃圾回收，但需要注意：
+
+**不是可靠的资源管理工具** - 回调执行时机不确定
+
+**不能替代显式清理** - 应该优先使用 `try/finally` 或 `Dispose` 模式
+
+**主要用于调试和监控** - 不适合关键业务逻辑
+
+```javascript
+let info = {name:"Cookie",age:19};
+let obj1 = new WeakRef(info);
+let obj2 = new WeakRef(info);
+
+const finalRegistry = new FinalizationRegistry(() => {
+            console.log("Garbage has been collected");
+});
+finalRegistry.register(info,"info");
+
+// info = null;
+// obj1 = null;
+// obj2 = null;
+
+setTimeout(() => {
+	info = null;
+},2000);
+
+// setTimeout(() => {
+//     const infoRef = obj1.deref();
+//     console.log(infoRef.name,infoRef.age);
+// },4000);
+```
+
+
+
+### ES13
+
+**Object.hasOwn**
+
+静态方法，直接通过 `Object` 调用，传入要检查的对象 (`obj`) 和属性名 (`prop`)。
+
+```javascript
+const obj = { foo: 'bar' };
+Object.hasOwn(obj, 'foo'); // true
+```
+
+与obj.hasOwnProperty的区别
+
+实例方法，需要通过对象实例调用，传入属性名 (`prop`)。
+
+```javascript
+const obj = { foo: 'bar' };
+obj.hasOwnProperty('foo'); // true
+```
+
+`obj.hasOwnProperty`**
+
+如果 `obj` 是 `null` 或 `undefined`，调用时会直接报错（`TypeError`）。
+
+```javascript
+const obj = Object.create(null);
+obj.name = "Cookie";
+//因为hasOwnProperty会在原型链上查找，但该对象的原型（__proto__）指向null
+//所以会报错
+console.log(obj.hasOwnProperty("name"))//报错
+console.log(Object.hasOwn(obj,"name"))
+```
+
+
+
+类中增加的新成员和私有属性
+
+```javascript
+class Person {
+    //公共属性
+	height = 1.8
+    //先前程序员约定的私有属性
+    _info = "GG";
+    //私有属性
+    #info = "GG";
+    //类属性(static)
+    //公共
+    static totalCount = 20；
+    //私有
+    static #mantotalCount = 10;
+    
+	//静态代码块
+	//在类被调用时会执行一次，一般可以做初始化操作
+    static {
+        console.log("Hello World");
+    }
+};
+```
+
+
+
+# Proxy-Reflect
+
+**Proxy** 和 **Reflect** 是 ES6 引入的两个强大的元编程（Meta-programming）特性，用于**拦截和自定义对象的基本操作**（如属性访问、赋值、函数调用等）。它们通常一起使用，但各自有不同的用途。
+
+
+
+## Proxy(代理)
+
+`Proxy` 用于**创建一个对象的代理**，可以拦截并自定义该对象的基本操作（如 `get`、`set`、`has`、`deleteProperty` 等）。
+
+**（掌握）：Object.defineProperty**
+
+```javascript
+let objKeys = Object.keys(obj);
+        for(const key of objKeys){
+            let value = obj[key];
+            Object.defineProperty(obj,key,{
+                get:function(){
+                    console.log(`监听:${key}值为`,value);
+                    return value;
+                },
+                set:function(newValue){
+                    console.log(`监听:正在更改${key},更改值为`,newValue);
+                    value = newValue;
+                }
+            })
+        };
+
+        console.log(obj.name);
+        obj.name = "Popguys"
+
+        obj.name = "Supermonkeyguys"
+```
+
+**缺点：**
+
+**1.无法监听数组变化**
+
+**无法检测数组索引的直接赋值**（如 `arr[0] = 1`）
+
+**无法检测 `push`、`pop`、`shift`、`unshift`、`splice` 等数组方法**
+
+**Vue 2.x 的解决方案**：重写数组的 7 个方法（`push`、`pop`、`shift`、`unshift`、`splice`、`sort`、`reverse`）来触发更新
+
+**2. 无法监听新增/删除属性**
+
+**只能监听已存在的属性**，新增或删除属性不会触发 `set`
+
+**Vue 2.x 的解决方案**：提供 `Vue.set` 和 `Vue.delete` 方法
+
+**3. 性能问题**
+
+**递归遍历所有属性**：如果对象嵌套很深，初始化时需要递归遍历所有属性，性能较差
+
+**不适合监听大对象**：如果对象属性很多，`defineProperty` 会占用较多内存
+
+**4. 无法监听 `Symbol` 类型的属性**
+
+`Object.defineProperty` 只能监听字符串类型的 `key`，无法监听 `Symbol` 类型的属性
+
+**5. 无法监听 `Map`、`Set`、`WeakMap`、`WeakSet`**
+
+`defineProperty` 只能用于普通对象，无法监听 ES6 新增的数据结构（如 `Map`、`Set`）
+
+
+
+**Proxy（掌握）：**
+
+`target`：要代理的目标对象
+
+`handler`：一个对象，包含各种"陷阱"（trap）方法，用于定义代理的行为
+
+可以在handler中添加对应的**捕捉器（Trap）**----set，get
+
+```javascript
+const proxy = new Proxy(target, handler);
+```
+
+**在设置对象对应的proxy对象代理后，原先对obj的操作就改成对objProxy的操作**
+
+```javascript
+const obj = {
+            name:"Cookie",
+            age:19,
+            height:1.8
+        }
+		//创建一个proxy对象
+        const objProxy = new Proxy(obj,{
+            //target目标对象 property被获取的属性key receiver调用代理对象
+            get:function(target,key) {
+                console.log(`监听:正在监听${key}的获取`);
+                return target[key];
+            },
+            //参数 target目标对象 property被获取的属性key newValue新属性值   receiver调用的代理对象
+            set:function(target,key,newValue) {
+                console.log(`监听:监听${key}的设置值`,newValue);
+                target[key] = newValue;
+            }
+        })
+
+        objProxy.name = "Supermonkeyguys";
+        console.log(objProxy.name);
+        objProxy.address = "Hai Nan"
+```
+
+
+
+## Reflect(反射)
+
+Reflect 是 JavaScript 中的一个内置对象，它提供了一系列静态方法来执行常见的对象操作。这些方法与 Proxy 处理程序方法一一对应，使得 Proxy 和 Reflect 可以很好地配合使用。
+
+### 特点：
+
+**所有方法都是静态的**：不需要实例化 Reflect 对象
+
+**与 Proxy 处理程序方法对应**：每个 Proxy 陷阱都有一个对应的 Reflect 方法
+
+**更规范的返回值**：相比直接操作对象，Reflect 方法返回更规范的布尔值或结果
+
+### 与Object.defineProperty的区别
+
+|     特性      |       `Reflect.defineProperty`        |         `Object.defineProperty`         |
+| :-----------: | :-----------------------------------: | :-------------------------------------: |
+|  **返回值**   | 返回布尔值（成功为true，失败为false） | 返回修改后的对象（失败时抛出TypeError） |
+| **错误处理**  |         静默失败（返回false）         |            抛出TypeError异常            |
+| **函数签名**  |  `(target, propertyKey, attributes)`  |        `(obj, prop, descriptor)`        |
+| **Proxy配合** |          与Proxy陷阱完美配合          |          不直接与Proxy陷阱对应          |
+|  **ES标准**   |                ES6引入                |                 ES5引入                 |
+
+```javascript
+"use strict"
+
+        const obj = {
+            name:"Cookie",
+            age:19,
+        }
+
+        //访问状态修改为false时影响判断，可能将该属性误认为删除
+        // Object.defineProperty(obj,"name",{
+        //     configurable:false,
+        // });
+
+        //ES6之前
+        //在严格模式下删除再访问，会发生报错
+        // delete obj.name;
+        // if(obj.name){
+        //     console.log("Fail to delete");
+        // }
+        // else {
+        //     console.log("Success to delete");
+        // }
+
+        if(Reflect.deleteProperty(obj,"name"))console.log("Success to delete");
+        else console.log("Fail to delete");
+```
+
+
+
+### Reflect 方法与 Proxy 陷阱的一一对应关系
+
+Reflect中有13个方法，与Proxy的方法一一对应
+
+|     Proxy 陷阱 (Trap)      |             Reflect 方法             |                           功能描述                           |
+| :------------------------: | :----------------------------------: | :----------------------------------------------------------: |
+|           `get`            |           `Reflect.get()`            |                      拦截对象属性的读取                      |
+|           `set`            |           `Reflect.set()`            |                      拦截对象属性的设置                      |
+|           `has`            |           `Reflect.has()`            |                       拦截 `in` 操作符                       |
+|      `deleteProperty`      |      `Reflect.deleteProperty()`      |                      拦截 `delete` 操作                      |
+|          `apply`           |          `Reflect.apply()`           |                         拦截函数调用                         |
+|        `construct`         |        `Reflect.construct()`         |                      拦截 `new` 操作符                       |
+|      `getPrototypeOf`      |      `Reflect.getPrototypeOf()`      |                拦截 `Object.getPrototypeOf()`                |
+|      `setPrototypeOf`      |      `Reflect.setPrototypeOf()`      |                拦截 `Object.setPrototypeOf()`                |
+|       `isExtensible`       |       `Reflect.isExtensible()`       |                 拦截 `Object.isExtensible()`                 |
+|    `preventExtensions`     |    `Reflect.preventExtensions()`     |              拦截 `Object.preventExtensions()`               |
+|      `defineProperty`      |      `Reflect.defineProperty()`      |                拦截 `Object.defineProperty()`                |
+| `getOwnPropertyDescriptor` | `Reflect.getOwnPropertyDescriptor()` |           拦截 `Object.getOwnPropertyDescriptor()`           |
+|         `ownKeys`          |         `Reflect.ownKeys()`          | 拦截 `Object.keys()`、`Object.getOwnPropertyNames()` 和 `Object.getOwnPropertySymbols()` |
+
+
+
+### 参数receiver
+
+用于设置getter/setter中的this值
+
+```javascript
+const obj = {
+            _name:"Cookie",
+            set name(newValue){
+                console.log("this:",this);
+                this._name = newValue;
+            },
+            get name() {
+                return this._name;
+            }
+        }
+
+        // obj._name = "GG";
+        // console.log(obj.name);
+
+        const objProxy = new Proxy(obj,{
+            set: function(target,key,newValue,receiver) {
+                console.log("Proxy中set设置方法被调用");
+                const isSuccess = Reflect.set(target,key,newValue,receiver);
+                
+                if(!isSuccess) {
+                    throw new Error(`set ${key} failure`);
+                }
+            },
+            get: function(target,key,receiver) {
+                console.log("Proxy中get获取方法被调用");
+                return Reflect.get(target,key,receiver);
+            }
+        })
+
+        console.log(objProxy.name);
+        objProxy.name = "Popguys";
+
+//输出
+//Proxy中get获取方法被调用
+//Proxy中get获取方法被调用
+//Cookie
+//Proxy中set设置方法被调用
+//this: {_name: 'Cookie'}
+```
+
+
+
+### 为什么需要 `receiver`？
+
+#### 继承场景下的问题
+
+```javascript
+const parent = {
+  _value: 10,
+  get value() {
+    return this._value;
+  }
+};
+
+const child = {
+  __proto__: parent,
+  _value: 20
+};
+```
+
+如果不使用 `receiver`，直接访问 `child.value` 会返回 `10` 而不是预期的 `20`，因为 getter 中的 `this` 默认指向定义属性的对象（parent）。
+
+#### `receiver` 的解决方案
+
+```javascript
+const parent = {
+  _value: 10,
+  get value() {
+    return this._value; // this 会指向 receiver
+  }
+};
+
+const child = {
+  __proto__: parent,
+  _value: 20
+};
+
+// 使用 Reflect.get 并传递 receiver
+console.log(Reflect.get(parent, 'value', child)); // 输出 20
+```
+
+
+
+### 实际应用示例
+
+#### 1. 基础示例
+
+```javascript
+const obj = {
+  _x: 1,
+  get x() {
+    return this._x;
+  }
+};
+
+const receiver = { _x: 2 };
+
+console.log(Reflect.get(obj, 'x')); // 1 (this 指向 obj)
+console.log(Reflect.get(obj, 'x', receiver)); // 2 (this 指向 receiver)
+```
+
+#### 2. Proxy 中的使用
+
+```javascript
+const target = {
+  _secret: 42,
+  get secret() {
+    return this._secret;
+  }
+};
+
+const proxy = new Proxy(target, {
+  get(target, prop, receiver) {
+    if (prop === 'secret') {
+      return Reflect.get(target, prop, receiver);
+    }
+    return Reflect.get(target, prop);
+  }
+});
+
+const obj = {
+  __proto__: proxy,
+  _secret: 100
+};
+
+console.log(obj.secret); // 100 (因为 receiver 正确传递)
+```
+
+#### 3. 类继承场景
+
+```javascript
+class Parent {
+  constructor() {
+    this._value = 10;
+  }
+  
+  get value() {
+    return this._value;
+  }
+}
+
+class Child extends Parent {
+  constructor() {
+    super();
+    this._value = 20;
+  }
+}
+
+const child = new Child();
+
+// 使用 Reflect 获取值
+console.log(Reflect.get(Parent.prototype, 'value', child)); // 20
+```
+
+#### 注意事项
+
+1. **默认值**：如果不提供 `receiver`，它默认为 `target` 对象本身
+2. **性能影响**：正确使用 `receiver` 可以避免创建不必要的中间对象
+3. **Proxy 链**：在多层 Proxy 中，`receiver` 会一直传递到最原始的调用者
+4. **严格模式**：在严格模式下，`receiver` 的行为更加明确和一致

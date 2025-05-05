@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        //将一个数组按照制定深度遍历，将遍历到的子数组或者元素返回生成一个新数组
+        const nums = [10,20,[111,222],[[213,119],[980,763]]];
+        const newNums1 = nums.flat(1);
+        console.log(newNums1); //[10, 20, 111, 222, Array(2), Array(2)]
+        const newNums2 = nums.flat(2);
+        console.log(newNums2); //[10, 20, 111, 222, 213, 119, 980, 763]
+
+        const message = [
+            "Hello World",
+            "Hello Hainan"
+        ]
+
+        //字符串拆解
+        const newInfos = [];
+        for(const item of message){
+            let tempMessage = item.split(" ");
+            for(const newItem of tempMessage){
+                newInfos.push(newItem);    
+            }
+        }
+        console.log(newInfos);
+    
+        let newInfos1 = [];
+        const newMessage = message.map(item => item.split(" "));
+        newInfos1 = newMessage.flat(1);
+        console.log(newInfos1);
+
+        let finalMessage = message.flatMap(item => item.split(" "));
+        console.log(finalMessage);
+
+        let info = {name:"Cookie",age:19};
+        let obj1 = new WeakRef(info);
+        let obj2 = new WeakRef(info);
+
+        const finalRegistry = new FinalizationRegistry(() => {
+            console.log("Garbage has been collected");
+        });
+
+        finalRegistry.register(info,"info");
+
+        // info = null;
+        // obj1 = null;
+        // obj2 = null;
+
+        setTimeout(() => {
+            info = null;
+        },2000);
+
+        // setTimeout(() => {
+        //     const infoRef = obj1.deref();
+        //     console.log(infoRef.name,infoRef.age);
+        // },4000);
+
+
+    </script>
+</body>
+</html>

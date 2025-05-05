@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    
+    <script>
+
+        const obj = {
+            name:"Cookie",
+            age:19,
+            height:1.8
+        }
+
+        const objProxy = new Proxy(obj,{
+            get:function(target,key) {
+                console.log(`监听:正在监听${key}的获取`);
+                return target[key];
+            },
+            set:function(target,key,newValue) {
+                console.log(`监听:监听${key}的设置值`,newValue);
+                target[key] = newValue;
+            }
+        })
+
+        objProxy.name = "Supermonkeyguys";
+        console.log(objProxy.name);
+        objProxy.address = "Hai Nan";
+
+    </script>    
+</body>
+</html>

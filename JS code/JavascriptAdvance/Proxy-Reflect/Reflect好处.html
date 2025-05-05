@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        const obj = {
+            name:"Cookie",
+            age:19,
+        }
+
+        const objProxy = new Proxy(obj,{
+            set:function(target,key,newValue){
+                //好处一：代理对象目标，不再操作原对象
+                //好处二：可以返回bool值，对当前操作是否成功
+                const isSuccess = Reflect.defineProperty(target,key,newValue);
+                if(!isSuccess){
+                    throw new Error(`set ${key} failure`);
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>

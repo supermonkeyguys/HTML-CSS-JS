@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h1 class="card"></h1>
+
+    <script>
+
+        const minute = "15".padStart(2,"0");
+        const second = "6".padStart(2,"0");
+
+        console.log(`${minute}:${second}`);
+
+        let cardNumber = "9191917878CCB4321";
+        const sliceNumber = cardNumber.slice(-4);
+        cardNumber = sliceNumber.padStart(cardNumber.length,"*");
+        const cardEl = document.querySelector(".card");
+        cardEl.textContent = cardNumber;
+        
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+        "use strict"
+
+        const obj = {
+            name:"Cookie",
+            age:19,
+        }
+
+        //访问状态修改为false时影响判断，可能将该属性误认为删除
+        // Object.defineProperty(obj,"name",{
+        //     configurable:false,
+        // });
+
+        //ES6之前
+        //在严格模式下删除再访问，会发生报错
+        // delete obj.name;
+        // if(obj.name){
+        //     console.log("Fail to delete");
+        // }
+        // else {
+        //     console.log("Success to delete");
+        // }
+
+        if(Reflect.deleteProperty(obj,"name"))console.log("Success to delete");
+        else console.log("Fail to delete");
+
+
+    </script>
+</body>
+</html>

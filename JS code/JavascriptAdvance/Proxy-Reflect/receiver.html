@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        const obj = {
+            _name:"Cookie",
+            set name(newValue){
+                console.log("this:",this);
+                this._name = newValue;
+            },
+            get name() {
+                return this._name;
+            }
+        }
+
+        // obj._name = "GG";
+        // console.log(obj.name);
+
+        const objProxy = new Proxy(obj,{
+            set: function(target,key,newValue,receiver) {
+                console.log("Proxy中set设置方法被调用");
+                const isSuccess = Reflect.set(target,key,newValue,receiver);
+                
+                if(!isSuccess) {
+                    throw new Error(`set ${key} failure`);
+                }
+            },
+            get: function(target,key,receiver) {
+                console.log("Proxy中get获取方法被调用");
+                return Reflect.get(target,key,receiver);
+            }
+        })
+
+        console.log(objProxy.name);
+        objProxy.name = "Popguys";
+
+    </script>
+</body>
+</html>

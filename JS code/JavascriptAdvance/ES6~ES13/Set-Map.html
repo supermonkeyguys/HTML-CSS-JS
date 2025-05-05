@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+        const set = new Set();
+
+        let obj1 = {
+            name:"CCB"
+        }
+
+        set.add(20);
+        set.add(30);
+        set.add({name:"Cookie",age:19});
+        set.add(91);
+        set.add(20);
+        set.add("GG");
+        console.log(set);
+
+        const names = ["Cookie","Popguys","Supermonkeyguys","Cookie"];
+        const setNames = new Set(names); //添入可迭代对象
+        console.log(setNames);
+
+        const weakSet = new WeakSet();
+        weakSet.add({name:"Cookie"});
+        weakSet.add(obj1);
+
+        const pWeakSet = new WeakSet();
+        class Person {
+            constructor() {
+                pWeakSet.add(this);
+            }
+
+            running() {
+                if(!pWeakSet.has(this)) {
+                    console.log("Type error");
+                    return;
+                }
+                console.log("running~");
+            }
+        }
+
+        const p = new Person();
+        p.running();
+        const runFn = p.running;
+        runFn();
+
+    </script>
+</body>
+</html>

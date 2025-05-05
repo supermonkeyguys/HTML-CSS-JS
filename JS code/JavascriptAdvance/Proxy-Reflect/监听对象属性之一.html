@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <h1 class="Name"></h1>
+
+    <script>
+
+        const obj = {
+            name:"Cookie",
+            age:19,
+            address:"HN"
+        }
+
+        let nameEl = document.querySelector('.Name');
+        nameEl.textContent = obj.name;
+
+        let objKeys = Object.keys(obj);
+        for(const key of objKeys){
+            let value = obj[key];
+            Object.defineProperty(obj,key,{
+                get:function(){
+                    console.log(`监听:${key}值为`,value);
+                    return value;
+                },
+                set:function(newValue){
+                    console.log(`监听:正在更改${key},更改值为`,newValue);
+                    nameEl.textContent = newValue;
+                    value = newValue;
+                }
+            })
+        };
+
+        console.log(obj.name);
+        obj.name = "Popguys"
+
+        obj.name = "Supermonkeyguys"
+
+    </script>
+</body>
+</html>
