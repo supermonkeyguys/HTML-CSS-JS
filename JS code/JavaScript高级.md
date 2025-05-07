@@ -3400,7 +3400,7 @@ const obj = {
 
 
 
-### 为什么需要 `receiver`？
+#### 为什么需要 `receiver`？
 
 #### 继承场景下的问题
 
@@ -3441,7 +3441,7 @@ console.log(Reflect.get(parent, 'value', child)); // 输出 20
 
 
 
-### 实际应用示例
+#### 实际应用示例
 
 #### 1. 基础示例
 
@@ -3518,3 +3518,845 @@ console.log(Reflect.get(Parent.prototype, 'value', child)); // 20
 2. **性能影响**：正确使用 `receiver` 可以避免创建不必要的中间对象
 3. **Proxy 链**：在多层 Proxy 中，`receiver` 会一直传递到最原始的调用者
 4. **严格模式**：在严格模式下，`receiver` 的行为更加明确和一致
+
+
+
+### Reflect中的construct
+
+`Reflect.construct()` 是 ES6 引入的 `Reflect` API 的一部分，用于调用构造函数创建对象实例。它提供了一种更规范、更可预测的方式来**替代传统的 `new` 操作符**，并允许更灵活地控制构造过程。
+
+**作用**
+
+1. **替代 `new` 操作符**
+   `Reflect.construct()` 的行为类似于 `new target(...argumentsList)`，但提供了更明确的函数式调用方式。
+2. **支持自定义 `newTarget`**
+   通过 `newTarget` 参数，可以动态指定新对象的原型链来源（即 `__proto__` 的指向），这在实现继承或代理时非常有用。
+
+```javascript
+Reflect.construct(target, argumentsList[, newTarget]);
+//**target**: 要调用的构造函数（即目标函数）。
+//**argumentsList**: 传递给构造函数的参数列表（通常是一个数组或类数组对象）。
+//**newTarget**(可选): 指定新创建对象的原型链来源。如果省略，默认为 target。
+```
+
+
+
+```javascript
+function Person(name,age) {
+            this.name = name;
+            this.age = age;
+        };
+
+        function Student() {
+
+        };
+
+        const stu = Reflect.construct(Person,["Cookie",19],Student);
+        console.log(stu.__proto__ === Student.prototype);//true
+```
+
+
+
+**与new的对比**
+
+|       特性       |                 `Reflect.construct()`                 |  `new` 操作符   |
+| :--------------: | :---------------------------------------------------: | :-------------: |
+|    函数式调用    |                          是                           |   否（语句）    |
+| 支持 `newTarget` |                          是                           |       否        |
+|  抛出异常的条件  | 更明确（如 `target` 不是函数/类（类在底层也是函数）） |  可能静默失败   |
+|    代理兼容性    |                   可被 `Proxy` 拦截                   | 可被 `new` 拦截 |
+
+
+
+# Promise
+
+### Promise 优缺点
+
+有了 Promise 对象，就可以将异步操作以同步操作的流程表达出来，避免了层层嵌套的回调函数。此外，Promise 对象提供统一的接口，使得控制异步操作更加容易。
+
+Promise 也有一些缺点。首先，无法取消 Promise，一旦新建它就会立即执行，无法中途取消。其次，如果不设置回调函数，Promise 内部抛出的错误，不会反应到外部。第三，当处于 Pending 状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）。
+
+
+
+Promise本质上是一个**构造函数**，使用new关键字创造，它是异步编程的一种异步编程的解决方案，比传统的解决方案--回调函数和事件（如下）更合理强大,属于ES6中的一个概念
+
+**异步代码处理的困境**
+
+```javascript
+//ES5前，异步代码的封装
+function excuCode(counter,successCallback,failureCallback){
+            setTimeout(() => {
+                if(counter > 0){
+                    let total = 0;
+                    for(let i = 0 ; i < counter ; i ++ ){
+                        total += i;
+                    }
+
+                    successCallback(total);
+                }
+                else {
+                    failureCallback(`counter is not as require`);
+                }
+            })
+
+        }
+
+        excuCode(-2,(value) => {
+            console.log("The final value is:",value);
+        },(err) => {
+            console.log(`TypeErr: ${err}`);
+        })
+```
+
+|                             困境                             |             解决方案             |
+| :----------------------------------------------------------: | :------------------------------: |
+|  回调地狱（当多个异步操作嵌套时，代码会变得难以阅读和维护）  |  Promise 链式调用 / async/await  |
+|       错误处理（回调函数的错误需要手动传递，容易遗漏）       |      `.catch()` / try/catch      |
+|    竞态条件（多个异步操作竞争资源时，结果可能不符合预期）    | Promise.race() / AbortController |
+|    状态管理（异步操作可能在不同时间完成，导致状态不一致）    |  Promise 状态跟踪 / async/await  |
+| 资源泄漏（未取消的异步操作（如定时器、网络请求）可能导致内存泄漏） |    显式清理 / AbortController    |
+|       并行/串行（需要明确异步操作是并行还是串行执行）        |    Promise.all() / 直接 await    |
+|   调试困难（异步代码的调用栈可能断裂，难以追踪错误来源。）   |    async_hooks / Source Maps     |
+
+
+
+### 解决方案Promise及各个状态
+
+promise是一个类，是一个代表了异步操作最终完成或失败的对象。**它有三种状态**：
+
+- **pending（待定）**：初始状态，既不是成功也不是失败
+- **fulfilled（已成功）**：操作成功完成
+- **rejected（已失败）**：操作失败
+
+**一旦 Promise 状态改变（从 pending 变为 fulfilled 或 rejected），状态就不可再变。**
+
+**Executor**
+
+Excutor是创建Promise时需要传入的一个回调函数，这个回调函数会被立即执行，并且传入两个参数（resolve,reject）：
+
+```javascript
+//promise代码结构
+function excuCode(counter) {
+    		//Promise内的回调函数会被立即执行
+            const promise = new Promise((resolve,reject) => {
+
+                setTimeout(() => {
+                    if(counter > 0){
+                        let total = 0;
+                        for(let i = 0 ; i < counter ; i ++ ){
+                            total += i;
+                        }
+
+                        resolve(total);
+                    }
+                    else {
+                        reject(`${counter} is not as require`);
+                    }
+                },1000);
+            });
+
+            return promise;
+        }
+
+        excuCode(-5).then(value => {
+            console.log(`The final result is ${value}`);
+        }).catch(err => {
+            console.log(`TypeError: ${err}`);            
+        });
+```
+
+
+
+**resolve不同值的区别**
+
+情况一：如果resolve传入一个普通的值或者对象，那么这个会作为then回调的参数
+
+情况二：如果resolve中传入的是另外一个Promise，那么这个新Promise会决定原Promise的状态
+
+情况三：如果resolve中传入的是一个对象，并且这个对象有实现then方法，那么会执行该then方法，并且根据then方法的结果觉得Promise的状态
+
+　
+
+#### Promise.resolve与new Promise的区别
+
+**Promise.solve(value)可以创建一个已解决(fulfilled)的Promsie**
+
+如果 `value` 本身是一个 Promise，`Promise.resolve` 会直接返回该 Promise（行为类似幂等）
+
+```javascript
+const p1 = Promise.resolve(42); // 直接创建已解决的 Promise
+const p2 = Promise.resolve(somePromise); // 如果 somePromise 是 Promise，则直接返回它
+```
+
+
+
+**new Promise((resolve, reject) => {})可以创建一个新的Promise，且可以手动调整resolve或reject来改变其状态**
+
+tips：
+
+**在需要异步封装操作(setTimeout，AJAX请求等)时使用**
+
+**使用时需要显示调用resolve或者reject来改变Promise状态**
+
+
+
+|     特性     |            `Promise.resolve()`             |                 `new Promise()`                 |
+| :----------: | :----------------------------------------: | :---------------------------------------------: |
+|   **状态**   | 立即变为 `fulfilled`（除非参数是 Promise） | 初始为 `pending`，需手动调用 `resolve`/`reject` |
+|   **用途**   |          包装已知值或已有 Promise          |                  封装异步操作                   |
+|  **灵活性**  |               低（直接解决）               |               高（可自定义逻辑）                |
+| **参数行为** |       若参数是 Promise，则直接返回它       |               总是创建新 Promise                |
+
+
+
+```javascript
+// 使用 Promise.resolve
+const p1 = Promise.resolve("Hello");
+p1.then(console.log); // 立即输出 "Hello"
+
+// 使用 new Promise
+const p2 = new Promise((resolve) => {
+  setTimeout(() => resolve("Hello"), 1000);
+});
+p2.then(console.log); // 1秒后输出 "Hello"
+```
+
+
+
+**特殊情况：**
+
+如果Promise.solve()的参数为**thenable对象**(即带有then方法的对象)，则它会尝试"展开"该对象
+
+```javascript
+Promise.resolve({
+  then(resolve) { resolve("Unwrapped!"); }
+}).then(console.log); // 输出 "Unwrapped!"
+```
+
+new Promise()不会自动展开thenable对象
+
+
+
+### **then－catch的返回值**
+
+什么是then？catch？
+
+**then => Promise.prototype.then 是Promise的一个实例方法，简单理解为 resolve 回调之后的产物， fulfilled 状态下的回调函数**
+
+**catch => Promise.rptotype.catch 同为Promise的一个实例方法，简单理解为 reject 回调之后的产物，rejected 状态下的产物**
+
+`then()` **总是返回一个新的 `Promise`**，其状态和值由以下规则决定：
+
+**１.当返回普通值时**
+
+```javascript
+promise.then(() => {
+  return 42; // 或字符串、对象等
+});
+```
+
+注意：当链式调用then时，返回普通值后的下一个then会立即执行
+
+```javascript
+const p0 = new Promise((resolve, reject) => {
+                console.log('This is promise') // 第一个输出 This is promise
+                resolve(1)
+            })
+
+            p0.then((res) => {
+                console.log(res) // 第二个输出 1
+                return new Promise((resolve, reject) => {
+                    resolve(2 * res)
+                })
+            })
+            .then((res) => {
+                console.log(res) // 第五个输出 2
+                return new Promise((resolve, reject) => {
+                    resolve(2 * res)
+                })
+            })
+            .then((res) => {
+                console.log(res) // 第六个输出 4
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+
+            const p1 = Promise.resolve(1)
+
+            p1.then((value) => {
+                console.log(value, 1) // 第三个输出 1 1
+                return value + 2
+            }).then((res) => {
+                console.log(res) // 第四个输出 3
+            })
+```
+
+**2.当返回Promise**
+
+```javascript
+promise.then(() => {
+  	return anotherPromise; // 返回另一个 Promise
+  //return new Promise((resolve,reject) => {}); 	
+});
+```
+
+**３.回调函数抛出异常**
+
+返回值：一个新的 **rejected** Promise，值为抛出的错误。
+
+```javascript
+promise.then(() => {
+  throw new Error("Oops!");
+});
+```
+
+**４.没有返回值（默认返回）**
+
+**返回值**：一个新的 **fulfilled** Promise，值为 `undefined`
+
+```javascript
+promise.then(() => {
+  console.log("No return");
+});
+```
+
+
+
+`catch(onRejected)` 本质是 `then(undefined, onRejected)` 的语法糖，**同样返回一个新的 Promise**，行为与 `then()` 类似：
+
+**1.捕获错误并正常处理**
+
+```javascript
+promise.catch((error) => {
+  console.error(error);
+  return "Recovered"; // 返回一个普通值
+});
+```
+
+**返回值**：一个新的 **fulfilled** Promise，值为 "Recovered"
+
+**2.捕获错误后再次抛出**
+
+```javascript
+promise.catch((error) => {
+  throw new Error("New error");
+});
+```
+
+- **返回值**：一个新的 **rejected** Promise，值为新的错误
+
+ **3.未发生错误（上游 Promise 成功）**
+
+```javascript
+promise
+  .then(() => "Success")
+  .catch(() => "Failure"); // 不会被调用
+```
+
+**返回值**：跳过 `catch()`，直接传递上游的 fulfilled Promise（值为 `"Success"`）
+
+**4.其他情况**
+
+|               `catch()` 回调行为               |  返回的 Promise 状态  |           返回值            |
+| :--------------------------------------------: | :-------------------: | :-------------------------: |
+|               **没有 `return`**                |       fulfilled       |         `undefined`         |
+|             **`return undefined`**             |       fulfilled       |         `undefined`         |
+|            **`return 非Promise值`**            |       fulfilled       |          返回的值           |
+|        **`return Promise.resolve(x)`**         | 跟随该 Promise 的状态 |    `x`（如果 fulfilled）    |
+| **`throw error` 或 `return Promise.reject()`** |       rejected        | 抛出的错误或 rejection 原因 |
+
+**为什么默认返回 `undefined`？**
+
+- `catch()` 的设计初衷是**捕获错误并恢复**，如果不手动返回，则默认视为“错误已处理”，并继续链式调用（状态变为 `fulfilled`）。
+- 如果希望错误继续传递，必须**显式抛出错误**或返回一个 rejected Promise。
+
+**tips：**
+
+**catch的隐式传参**
+
+|     写法     |              代码示例              |             效果             |
+| :----------: | :--------------------------------: | :--------------------------: |
+| **隐式传参** |          `.catch(reject)`          | 自动将 `error` 传给 `reject` |
+| **显式传参** | `.catch((error) => reject(error))` |       手动传递 `error`       |
+
+
+
+**总结**
+
+1. **链式调用**：`then()` 和 `catch()` 的返回值允许链式调用（如 `promise.then(...).catch(...)`）。
+2. **状态传递**：若回调返回 Promise，新 Promise 会“跟随”其状态。
+3. **隐式返回**：未显式返回时，相当于返回 `undefined`（fulfilled 状态）。
+4. **错误穿透**：若链中未定义 `onRejected`，错误会向下传递直到被 `catch()` 捕获。
+
+### Finally
+
+**概念：**`finally()` 是 Promise 对象的一个方法，**不接受任何参数**，用于指定一个回调函数，无论 Promise 是成功（`fulfilled`）还是失败（`rejected`），**都会被执行**。它的主要用途是执行清理逻辑（如关闭资源、隐藏加载动画等），而不会影响 Promise 链的最终状态或值。
+
+**1.回调不返回任何值（或返回普通值）**
+
+```javascript
+Promise.resolve("Success")
+  .finally(() => {
+    console.log("Cleanup"); // "Cleanup"
+    return "Ignored"; // 会被忽略
+  })
+  .then(result => console.log(result)); // "Success"（原值）
+```
+
+**结果**：新 Promise 保持原 Promise 的状态和值（`"Success"`）
+
+**2.回调抛出错误**
+
+```javascript
+Promise.resolve("Success")
+  .finally(() => {
+    throw new Error("Oops!"); // 抛出错误
+  })
+  .then(result => console.log(result)) // 不会执行
+  .catch(error => console.error(error)); // Error: "Oops!"
+```
+
+**结果**：新 Promise 变成 `rejected`，错误会传递到 `catch()`
+
+**3.回调返回 rejected Promise**
+
+```javascript
+Promise.resolve("Success")
+  .finally(() => {
+    return Promise.reject("Failed"); // 返回 rejected Promise
+  })
+  .then(result => console.log(result)) // 不会执行
+  .catch(error => console.error(error)); // "Failed"
+```
+
+**结果**：新 Promise 变成 `rejected`，错误会传递到 `catch()`
+
+
+
+#### **finally() vs then() vs catch()**
+
+|    方法     |                 执行时机                  |       是否影响 Promise 状态        |   返回值   |
+| :---------: | :---------------------------------------: | :--------------------------------: | :--------: |
+|  `then()`   |          仅在 `fulfilled` 时执行          |          可以修改状态和值          | 新 Promise |
+|  `catch()`  |          仅在 `rejected` 时执行           |          可以修改状态和值          | 新 Promise |
+| `finally()` | **无论 `fulfilled` 或 `rejected` 都执行** | **默认不影响状态**（除非抛出错误） | 新 Promise |
+
+
+
+**Conclusion**
+
+- `finally()` **一定会执行**，适用于清理逻辑。
+- **默认不影响 Promise 的状态和值**（除非回调抛出错误或返回 rejected Promise）。
+- **返回一个新的 Promise**，通常继承原 Promise 的状态。
+- 常用于关闭资源、隐藏 UI 状态（如加载动画）等场景。
+
+
+
+### Promise中的reject和resolve
+
+**resolve：**将 Promise 的状态从 **`pending`（等待）** 变为 **`fulfilled`（已完成）**，并传递一个成功的结果值(`value`)
+
+```javascript
+const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("操作成功！"); // Promise 状态变为 fulfilled
+  }, 1000);
+});
+
+promise.then((result) => {
+  console.log(result); // 输出："操作成功！"
+});
+
+const promise = new Promise((resolve,reject) => {
+            resolve("Yes!"); 
+        });
+
+        promise.then(res => {
+            console.log(res);
+        });
+
+        Promise.resolve(1).then(res => {console.log(res)});
+```
+
+**如果 `value` 是另一个 Promise，当前 Promise 会跟随该 Promise 的状态（即“递归解析”）。是fulfilled就是fulfilled，是rejected就是rejected**
+
+调用 `resolve` 后，后续的 `reject` 或 `resolve` 会被忽略（状态不可逆）。
+
+
+
+**reject：**将 Promise 的状态从 **`pending`（等待）** 变为 **`rejected`（已拒绝）**，并传递一个失败的原因（`reason`）
+
+```javascript
+const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject(new Error("操作失败！")); // Promise 状态变为 rejected
+  }, 1000);
+});
+
+promise.catch((error) => {
+  console.error(error.message); // 输出："操作失败！"
+});
+
+const p1 = new Promise((resolve,reject) => {
+            reject("No!");
+        });
+
+        p1.catch(err => {
+            console.log(err);
+        })
+
+        Promise.reject("GG").catch(err => console.log(err));
+```
+
+`reason` 可以是任意值（通常用 `Error` 对象）。
+
+**调用 `reject` 后，Promise 状态立即变为 `rejected`，后续的 `resolve` 或 `reject` 会被忽略**
+
+|     特性     |       `resolve(value)`       |        `reject(reason)`        |
+| :----------: | :--------------------------: | :----------------------------: |
+| **状态变更** |   `pending` → `fulfilled`    |     `pending` → `rejected`     |
+| **后续处理** |  触发 `.then()` 或 `await`   | 触发 `.catch()` 或 `try/catch` |
+| **是否可逆** | 不可逆（一旦调用即锁定状态） |  不可逆（一旦调用即锁定状态）  |
+| **参数类型** |    任意值（包括 Promise）    | 任意值（建议用 `Error` 对象）  |
+
+
+
+### *Promise.all（掌握）*
+
+#### 基本语法：
+
+```javascript
+Promise.all(iterable);
+```
+
+- **参数**：一个可迭代对象（如数组），包含多个 Promise 或其他值（非 Promise 会被 `Promise.resolve` 包装）。
+- **返回值**：一个新的 Promise。
+
+```javascript
+const p1 = Promise.resolve(9);
+        const p2 = Promise.resolve(7);
+        const p3 = new Promise((resolve,reject) => {
+            setTimeout(() => {
+                resolve(5);
+            },1000);
+        });
+
+        const promiseAll = Promise.all([p1,p2,p3])
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+```
+
+#### 特性：
+
+**全部成功才成功**
+
+只有所有Promise都成功时，Promise.all才会成功，并按照顺序返回结果数组（如上）
+
+**一个失败就立即失败**
+
+在传入的Promise中有其中一个失败，Promise.all会立即拒绝，不再等待其他Promise
+
+```javascript
+const p1 = Promise.resolve(1);
+const p2 = Promise.reject("No!");
+const p3 = Promise.resolve(9);
+const p4 = Promise.reject("Error!");
+
+Promise.all([p1,p2,p3,p4])
+.then(res => {
+    console.log(res);
+})
+.catch(err => {
+    console.log(err);
+});
+//No!
+```
+
+
+
+#### **注意：**
+
+**1.对于错误的处理**
+
+必须用.catch捕获可能的失败，否则未处理的拒绝会导致UnhandledPromiseRejectionWarning
+
+**2.空数组会立即成功**
+
+如果传入空数组 `[]`，`Promise.all` 会立即返回一个 `fulfilled` 状态的 Promise，结果是空数组
+
+```javascript
+Promise.all([])
+  .then((results) => console.log(results)); // []
+```
+
+**3.不保证执行顺序（但结果顺序固定）**
+
+`Promise.all` 不会改变 Promise 的执行顺序（可能并行执行），但返回结果的顺序与输入顺序一致。
+
+```javascript
+const p1 = new Promise((resolve) => setTimeout(() => resolve(1), 1000));
+const p2 = new Promise((resolve) => setTimeout(() => resolve(2), 500));
+
+Promise.all([p1, p2])
+  .then((results) => console.log(results)); // [1, 2]（即使 p2 先完成，结果顺序不变）
+```
+
+
+
+#### **手写实现Promise.all**
+
+```javascript
+const p1 = Promise.resolve(9);
+        const p2 = Promise.resolve(7);
+        const p3 = new Promise((resolve,reject) => {
+            setTimeout(() => {
+                resolve(5);
+            },1000);
+        });
+
+        Promise.myAll = function(promises) {
+            return new Promise((resolve,reject) => {
+                
+                const res = [];
+                let completedCount = 0;
+
+                promises.forEach((promise,index) => {
+                    Promise.resolve(promise)
+                    .then(value => {
+                        res[index] = value;
+                        completedCount ++ ;
+                        if(completedCount === promises.length){
+                            resolve(res);
+                        }
+                    })
+                    .catch(reject);//catch的隐式传参
+                    //.catch(err => reject(err));
+                });
+            });
+        };
+        
+        Promise.myAll([p1,p2,p3])
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+```
+
+
+
+### Promise.race and Promise.any
+
+#### **二者区别**
+
+|      方法      |             成功条件             |           失败条件           |      空数组行为       |
+| :------------: | :------------------------------: | :--------------------------: | :-------------------: |
+| `Promise.any`  |       第一个成功的 Promise       | 全部失败（`AggregateError`） |       同步拒绝        |
+| `Promise.race` | 第一个完成的 Promise（无论成败） |     第一个失败的 Promise     | 永远挂起（`pending`） |
+
+
+
+#### **与其他方法的对比**
+
+|         方法         |              作用              |        成功条件        |       失败条件        |
+| :------------------: | :----------------------------: | :--------------------: | :-------------------: |
+|    `Promise.race`    | 取第一个完成的结果（无论成败） |  第一个完成的 Promise  | 第一个失败的 Promise  |
+|    `Promise.all`     |         全部成功才成功         |   所有 Promise 成功    | 任意一个 Promise 失败 |
+| `Promise.allSettled` |    等待所有完成（无论成败）    | 总是成功，返回状态数组 |       不会失败        |
+|    `Promise.any`     |       取第一个成功的结果       | 至少一个 Promise 成功  |   全部 Promise 失败   |
+
+
+
+#### race
+
+`Promise.race` 是 JavaScript 中用于处理多个 Promise **竞争执行**的静态方法。它接收一个 Promise 数组（或可迭代对象），并返回一个新的 Promise。这个新 Promise 的状态由**最先完成（无论成功或失败）**的输入 Promise 决定。
+
+##### **语法:**
+
+```javascript
+Promise.race(iterable);
+```
+
+**参数**：一个可迭代对象（如数组），包含多个 Promise 或其他值（非 Promise 会被 `Promise.resolve` 包装）
+
+**返回值**：一个新的 Promise，其状态和结果与第一个完成的输入 Promise 一致
+
+```javascript
+const p1 = new Promise((resolve) => setTimeout(() => resolve("p1 成功"), 1000));
+const p2 = new Promise((_, reject) => setTimeout(() => reject("p2 失败"), 500));
+
+Promise.race([p1, p2])
+  .then((result) => console.log("成功:", result))
+  .catch((error) => console.error("失败:", error)); 
+// 输出: "失败: p2 失败"（p2 先完成）
+```
+
+##### **特性：**
+
+1.无论第一个完成的 Promise 是成功（`fulfilled`）还是失败（`rejected`），`Promise.race` 都会立即跟随它的状态
+
+2.如果传入的值不是 Promise（如数字、字符串），`Promise.race` 会用 `Promise.resolve` 包装它（与Promise.all相同）
+
+3.如果传入空数组 `[]`，`Promise.race` 返回的 Promise 会永远处于 `pending` 状态（因为没有 Promise 可竞争）
+
+```javascript
+const racePromise = Promise.race([]);
+console.log(racePromise); // Promise { <pending> }（不会解决或拒绝）
+```
+
+
+
+##### **注意：**
+
+**忽略后续结果**
+
+一旦有一个 Promise 完成，其他 Promise 的结果会被忽略（即使它们后续成功或失败）。
+
+```javascript
+const p1 = new Promise((resolve) => setTimeout(() => resolve("p1"), 200));
+const p2 = new Promise((resolve) => setTimeout(() => resolve("p2"), 100));
+
+Promise.race([p1, p2])
+  .then(console.log); // 输出: "p2"（p1 的结果被忽略）
+```
+
+**必须对错误处理**
+
+必须用 `.catch` 捕获可能的失败，否则未处理的拒绝会导致 `UnhandledPromiseRejectionWarning`。
+
+**不保证执行顺序**
+
+`Promise.race` 只关心第一个完成的结果，不保证 Promise 的启动顺序或并行性
+
+
+
+##### **手写race**
+
+```javascript
+Promise.myRace = function (promises) {
+  return new Promise((resolve, reject) => {
+    promises.forEach((promise) => {
+      Promise.resolve(promise) // 处理非 Promise 值
+        .then(resolve)        // 第一个成功则 resolve
+        .catch(reject);       // 第一个失败则 reject
+    });
+  });
+};
+```
+
+
+
+#### any
+
+##### **语法**
+
+`Promise.any` 是 ES2021 引入的 Promise 静态方法，用于处理多个 Promise 的竞争执行。它的核心逻辑是：
+**等待第一个成功的 Promise，如果所有 Promise 都失败，则返回一个聚合错误。**
+
+```javascript
+Promise.any(iterable);
+```
+
+**参数**：可迭代对象（如数组），包含多个 Promise 或非 Promise 值（会被 `Promise.resolve` 包装）
+
+**返回值**：一个新的 Promise，其状态由第一个成功的 Promise 决定；如果全部失败，则拒绝并返回 `AggregateErro`
+
+```javascript
+const p1 = Promise.reject("Error 1");
+const p2 = new Promise((resolve) => setTimeout(() => resolve("Success"), 500));
+const p3 = Promise.reject("Error 2");
+
+Promise.any([p1, p2, p3])
+  .then((result) => console.log("成功:", result))  // 输出: "成功: Success"
+  .catch((error) => console.error("全部失败:", error));
+```
+
+
+
+##### **特性**
+
+**1.第一个成功的 Promise 决定结果**
+
+只要有一个 Promise 成功，`Promise.any` 就会立即返回它的结果，忽略后续 Promise
+
+ **2.全部失败时返回 `AggregateError`**
+
+如果所有 Promise 都失败，`Promise.any` 会拒绝并返回一个 `AggregateError` 对象，包含所有错误信息
+
+```javascript
+Promise.any([Promise.reject("Error 1"), Promise.reject("Error 2")])
+  .catch((error) => {
+    console.error(error instanceof AggregateError); // true
+    console.error(error.errors); // ["Error 1", "Error 2"]
+  });
+```
+
+**3.非 Promise 值会被自动转换**
+
+非 Promise 值（如 `42` 或 `"foo"`）会被 `Promise.resolve` 包装，视为立即成功的 Promise
+
+```javascript
+Promise.any([1, Promise.reject("Error")])
+  .then(console.log); // 输出: 1（数字先“成功”）
+```
+
+**4.空数组会立即拒绝**
+
+如果传入空数组 `[]`，`Promise.any` 会同步拒绝并抛出 `AggregateError`
+
+```javascript
+Promise.any([])
+  .catch((error) => console.error(error.errors)); // []
+```
+
+
+
+##### **注意**
+
+**必须处理错误**
+
+必须用 `.catch` 处理可能的 `AggregateError`，尤其是在全部失败时
+
+```javascript
+Promise.any([p1, p2])
+  .then((result) => { /* 处理成功 */ })
+  .catch((error) => {
+    if (error instanceof AggregateError) {
+      console.error("全部失败:", error.errors);
+    } else {
+      console.error("其他错误:", error);
+    }
+  });
+```
+
+
+
+##### **手写any**
+
+```javascript
+Promise.myAny = function (promises) {
+  return new Promise((resolve, reject) => {
+    const errors = [];
+    let failedCount = 0;
+
+    promises.forEach((promise, index) => {
+      Promise.resolve(promise)
+        .then(resolve) // 第一个成功则立即 resolve
+        .catch((error) => {
+          errors[index] = error;
+          failedCount++;
+          if (failedCount === promises.length) {
+            reject(new AggregateError(errors, "All promises were rejected"));
+          }
+        });
+    });
+  });
+};
+```
+

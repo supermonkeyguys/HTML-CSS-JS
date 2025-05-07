@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        // function excuCode(counter,successCallback,failureCallback){
+        //     setTimeout(() => {
+        //         if(counter > 0){
+        //             let total = 0;
+        //             for(let i = 0 ; i < counter ; i ++ ){
+        //                 total += i;
+        //             }
+
+        //             successCallback(total);
+        //         }
+        //         else {
+        //             failureCallback(`counter is not as require`);
+        //         }
+        //     },3000)
+
+        // }
+
+        // excuCode(-2,(value) => {
+        //     console.log("The final value is:",value);
+        // },(err) => {
+        //     console.log(`TypeErr: ${err}`);
+        // })
+
+
+        console.log(Promise.prototype.then instanceof Function);
+        console.log(Promise.prototype);
+        console.log(Promise.resolve(1));
+
+        const promise = new Promise((resolve,reject) => {
+            // resolve(5);
+            reject("Err");
+            setTimeout(() => {
+                console.log(promise);
+            },5000);
+        }).catch(err => {
+            console.log(err);
+
+            // throw new Error("Oops!");
+            // return Promise.reject("TypeErr:GG");
+        });
+
+        
+    </script>
+</body>
+</html>

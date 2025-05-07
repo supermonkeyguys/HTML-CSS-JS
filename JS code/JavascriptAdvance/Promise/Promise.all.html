@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+
+        // const p1 = Promise.resolve(9);
+        // const p2 = Promise.resolve(7);
+        // const p3 = new Promise((resolve,reject) => {
+        //     setTimeout(() => {
+        //         resolve(5);
+        //     },1000);
+        // });
+
+        // const promiseAll = Promise.all([p1,p2,p3])
+        // .then(res => {
+        //     console.log(res);
+        // })
+        // .catch(err => {
+        //     console.log(err);
+        // })
+
+        const p1 = Promise.resolve(1);
+        const p2 = Promise.reject("No!");
+        const p3 = Promise.resolve(9);
+        const p4 = Promise.reject("Error!");
+
+        Promise.all([p1,p2,p3,p4])
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+        
+
+    </script>
+</body>
+</html>

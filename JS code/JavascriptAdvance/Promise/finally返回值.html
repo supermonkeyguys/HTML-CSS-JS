@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+        // Promise.resolve("Success")
+        // .finally(() => {
+        //     console.log("Cleanup"); // "Cleanup"
+        //     return "Ignored"; // 会被忽略
+        // })
+        // .then(result => console.log(result)); // "Success"（原值）
+
+        Promise.resolve("Success")
+        .finally(() => {
+            throw new Error("Oops!"); // 抛出错误
+        })
+        .then(result => console.log(result)) // 不会执行
+        .catch(error => console.error(error)); // Error: "Oops!"
+
+    </script>
+</body>
+</html>

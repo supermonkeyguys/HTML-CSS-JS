@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        function excuCode(counter) {
+            const promise = new Promise((resolve,reject) => {
+
+                setTimeout(() => {
+                    if(counter > 0){
+                        let total = 0;
+                        for(let i = 0 ; i < counter ; i ++ ){
+                            total += i;
+                        }
+
+                        resolve(total);
+                    }
+                    else {
+                        reject(`${counter} is not as require`);
+                    }
+                },1000);
+            });
+
+            return promise;
+        }
+
+        excuCode(-5).then(value => {
+            console.log(`The final result is ${value}`);
+        }).catch(err => {
+            console.log(`TypeError: ${err}`);            
+        });
+
+        const promise = new Promise((resolve,reject) => {
+            reject("failure");
+        })
+        //如果 Promise 被 reject 但没有被 catch 捕获，错误会一直向下传递
+        //在这个例子中，第一个 catch() 捕获了错误，所以后续的 catch() 不会执行
+        promise.then(res => {
+            console.log("Yes");
+        })
+
+        promise.catch(err => {
+            console.log("No");
+        })
+        promise.catch(err => {
+            console.log("No");
+        })
+        promise.catch(err => {
+            console.log("No");
+        })
+        promise.catch(err => {
+            console.log("No");
+        })
+
+        promise.then(res => {
+            console.log("Yes");
+        })
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        function Person(name,age) {
+            this.name = name;
+            this.age = age;
+        };
+
+        function Student() {
+
+        };
+
+        const stu = Reflect.construct(Person,["Cookie",19],Student);
+        console.log(stu.__proto__ === Student.prototype);
+
+        class Animal {
+            constructor(name,age){
+                this.name = name;
+                this.age = age;
+            }
+        }
+
+        class Dog {
+
+        }
+
+        const burch = Reflect.construct(Animal,["toki",7],Dog);
+        console.log(burch.__proto__ === Dog.prototype);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+
+        const promise = new Promise((resolve,reject) => {
+            resolve("Yes!"); 
+        });
+
+        promise.then(res => {
+            console.log(res);
+        });
+
+        Promise.resolve(1).then(res => {console.log(res)});
+
+        const p1 = new Promise((resolve,reject) => {
+            reject("No!");
+        });
+
+        p1.catch(err => {
+            console.log(err);
+        })
+
+        Promise.reject("GG").catch(err => console.log(err));
+
+        console.log(Promise.resolve(p1));
+
+    </script>
+</body>
+</html>
