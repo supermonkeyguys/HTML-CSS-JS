@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+
+        // const obj = {
+        //     [Symbol.iterator]:function() {
+        //         let i = 0;
+        //         return {
+        //             next:function(){
+        //                 if(i < 4){
+        //                     return {
+        //                         done: false,
+        //                         value: 2 * i ++ ,
+        //                     }
+        //                 };
+        //                 return {
+        //                     done: true, 
+        //                     value: undefined
+        //                 };
+        //             }
+        //         }
+        //     }
+        // };
+
+        // for(const key of obj){
+        //     console.log(key);
+        // }
+
+        const obj = {
+            i: 0,
+            next(){
+                if(this.i < 4){
+                    return {done: false,value: 2 * this.i ++ };
+                };
+                return {done: true,value:undefined};
+
+
+            },
+            return(value){
+                this.i = value;
+                return {value,done:true};
+            }
+        }
+
+        for(const key of Object.getOwnPropertySymbols(Array.prototype))console.log(key);
+
+        console.log(obj.i,obj.next());
+        console.log(obj.i,obj.next());
+        console.log(obj.i,obj.return());
+        console.log(obj.i,obj.next());
+        console.log(obj.i,obj.next());
+
+    </script>
+</body>
+</html>

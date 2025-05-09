@@ -2,7 +2,7 @@
 
 ***JavaScript高级:***
 
-![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-07_22-41-05.png)
+![](JavaScript高级.assets/Snipaste_2025-03-07_22-41-05.png)
 
 ## JavaScript函数this指向
 
@@ -108,10 +108,6 @@ foo.call(123)
 foo.call("Code")
 foo.call(undefined)
 ```
-
-
-
-![](C:\Users\30292\Desktop\HTML-CSS-JS\JS code\img\Snipaste_2025-03-09_20-32-24.png)
 
 
 
@@ -4360,3 +4356,63 @@ Promise.myAny = function (promises) {
 };
 ```
 
+
+
+# JS中的迭代器-生成器
+
+## 迭代器 (Iterator)
+
+迭代器是一种对象，它提供了一种标准的方式来访问集合中的元素，而不需要暴露集合的内部表示。
+
+### 基本概念
+
+- **迭代器协议**：一个对象要成为迭代器，必须实现一个 `next()` 方法，该方法返回一个包含 `value` 和 `done` 属性的对象
+- `value`：当前迭代的值
+- `done`：布尔值，表示迭代是否完成
+
+```javascript
+const obj = {
+            [Symbol.iterator]:function() {
+                let i = 0;
+                return {
+                    next:function(){
+                        if(i < 4){
+                            return {
+                                done: false,
+                                value: 2 * i ++ ,
+                            }
+                        };
+                        //return ture用于结束迭代
+                        return {
+                            done: true, 
+                            value: undefined
+                        };
+                    }
+                }
+            }
+        };
+
+        for(const key of obj){
+            console.log(key);
+        }
+//使得对象obj可迭代(原先不可)
+```
+
+可以用return，throw方法提前结束
+
+### 内置可迭代对象
+
+JavaScript 中许多内置对象是可迭代的：
+
+- Array
+- String
+- Map
+- Set
+- NodeList (DOM)
+- arguments 对象
+
+
+
+## 生成器(Generator)
+
+生成器是一种特殊的函数，可以暂停和恢复执行，用于简化迭代器的创建。
