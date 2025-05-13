@@ -4415,4 +4415,1034 @@ JavaScript 中许多内置对象是可迭代的：
 
 ## 生成器(Generator)
 
-生成器是一种特殊的函数，可以暂停和恢复执行，用于简化迭代器的创建。
+生成器是ES6新增的一种可以对函数控制的方案，能灵活的控制函数的暂停执行，继续执行等。
+
+**生成器函数和普通函数的不同**
+
+- 定义: 普通函数`function`定义，生成器函数`function*`，要在后面加`*`
+- 生成器函数可以通过 `yield` 来控制函数的执行
+- 生成器函数返回一个生成器(generator)，**生成器是一个特殊的迭代器**
+
+
+
+### 参数和返回值
+
+```javascript
+function* generator(arg1){
+            console.log(`arg1:${arg1}`); //1
+    		//next可以从yield中断停止函数的位置开始接收函数
+    		// 下一次next()调用时传入的值会作为yield表达式的结果
+    		//返回值{value:"call",done:false}
+            const arg2 = yield "call" 
+            console.log(`arg2:${arg2}`); //2
+            
+    		//return后结束生成器执行
+    		//将done设置为true
+    		//后续next调用返回值value都为undefined
+    		//{value:"19",done:true}
+            return 19;
+
+    		//{value:"undefined",done:true}
+            const arg3 = yield "Thrid"; 
+            console.log(`arg3:${arg3}`); //不执行
+
+            yield "GG" //
+            console.log(`The end?`);//不执行
+            return 9; //无效
+        }
+
+        const generatorFn = generator("1");
+
+        console.log(generatorFn.next());
+        console.log(generatorFn.next("2"));
+		//后续调用都返回{value: undefined, done: true}
+        console.log(generatorFn.next("3"));
+        console.log(generatorFn.next());
+```
+
+#### return方法与throw方法
+
+**return方法**
+
+```javascript
+function* generator(arg1){
+            console.log(`arg1:${arg1}`);
+            const arg2 = yield "Second"
+            console.log(`arg2:${arg2}`);
+
+            const arg3 = yield "Thrid";
+            console.log(`arg3:${arg3}`);
+
+            yield "GG"
+            console.log(`The end?`);
+        }
+
+        const generatorFn = generator("1");
+
+        console.log(generatorFn.next());
+        console.log(generatorFn.next("2"));
+		//提前结束,{value:"GG",done:true},不再执行生成器内部代码
+        console.log(generatorFn.return("GG"));
+		//后续调用next方法无意义
+        console.log(generatorFn.next());
+
+
+		
+```
+
+**throw方法**
+
+抛出异常后我们可以在生成器函数中捕获异常
+
+但是在catch语句中不能继续yield新的值，但可以在catch语句外使用yield继续中断函数的执行
+
+```javascript
+function* foo(){
+
+            console.log(1);
+
+            try{
+                yield "666";
+            }catch(err){
+                console.log(`TypeErr: ${err}`);
+            }
+
+            yield 999;
+
+            console.log("The end");
+        }
+
+        const gtFoo = foo();
+		
+		//步步对应
+        console.log(gtFoo.next());
+        console.log(gtFoo.throw(new Error("???")));
+        console.log(gtFoo.next());
+```
+
+
+
+### 应用场景
+
+```javascript
+function* rangeNumber(sta,end){
+            for(let i = sta ; i < end ; i ++ ){
+                yield i;
+            }
+        }
+
+        const rangeNum = rangeNumber(9,123);
+
+        console.log(rangeNum.next());
+        console.log(rangeNum.next());
+        console.log(rangeNum.next());
+        console.log(rangeNum.next());
+```
+
+
+
+### *异步处理（掌握）*
+
+传统异步处理的方案（回调函数嵌套，callback hell）
+
+**解决方案：**
+
+```javascript
+//链式调用(阅读性有点差)
+function requestData(url){
+            return new Promise((resolve,reject) => {
+                setTimeout(() => {
+                    resolve(url);
+                },2000);
+            })
+        }
+
+        function getData(){
+            requestData("Cookie").then(res1 => {
+                console.log(res1);
+                return requestData(`${res1} HN`);
+            }).then(res2 => {
+                console.log(res2);
+                return requestData(`${res2} 1689`);
+            }).then(res3 => {
+                console.log(res3);
+            })
+        }
+
+        getData();
+```
+
+
+
+### async & await
+
+#### ***前情了解：生成器方案***
+
+```javascript
+function requestData(arg){
+            return new Promise((resolve,reject) => {
+                setTimeout(() => {
+                    resolve(arg);
+                },2000);
+            })
+        }
+function* getData(name,address,id){
+            const res1 = yield requestData(`${name}`);
+            console.log(res1);
+
+            const res2 = yield requestData(`${res1}-${address}`);
+            console.log(res2);
+
+            const res3 = yield requestData(`${res2}-${id}`);
+            console.log(res3);
+        }
+
+const data = getData("Cookie","HN",1680);
+        data.next().value.then(res1 => {
+            data.next(res1).value.then(res2 => {
+                data.next(res2).value.then(res3 => {
+                    data.next(res3);
+                })
+            })
+        })
+```
+
+
+
+#### **这两是啥？**
+
+`async` 和 `await` 是 JavaScript 中用于处理 **异步操作** 的**语法糖**，它们基于 **Promise**，但让异步代码的写法更接近同步代码，提高可读性和可维护性。
+
+对于上面的一个生成器方案的简化
+
+```javascript
+const requestData = function(arg){
+            return new Promise((resolve,reject) => {
+                setTimeout(() => {
+                    resolve(arg);
+                },2000);
+            })
+        }
+
+        async function getData(name,address,id){
+            const res1 = await requestData(name);
+            console.log(res1);
+
+            const res2 = await requestData(`${res1} ${address}`);
+            console.log(res2);
+
+            const res3 = await requestData(`${res2} ${id}`);
+            console.log(res3);
+        }
+
+        const dataShow = getData("Cookie","HN",1680);
+```
+
+
+
+#### async
+
+**在函数开头添加async前缀，即可注册为异步函数**
+
+async总是会默认返回一个Promise（状态为fulfilled）
+
+如果抛出异常会返回rejected的Promise
+
+如果返回Promise以外的值则会自动包装成resolved的Promise
+
+```javascript
+async function foo(){};
+async () => {};
+
+async function fn(num){
+
+	// throw new Error("GG");
+
+	return num 
+}
+
+console.log(fn(10));//Promise {<fulfilled>: 10}
+```
+
+
+
+##### 执行顺序
+
+async函数本身同步（立即执行）
+
+```javascript
+console.log(1);
+
+(async () => {
+    console.log(2);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 宏任务
+    console.log(3);
+})();
+
+console.log(4);
+//1
+//2
+//4
+//（1秒后）
+//3
+```
+
+await之后的操作加入微任务队列（注：`await` 之后的代码**不会直接加入微任务队列**，而是**在 `Promise` 解决后，将后续代码包装成一个微任务**）
+
+```javascript
+async function example() {
+  console.log("1");
+  await Promise.resolve(); // 微任务入队点
+  console.log("3"); // 这部分代码会被包装成微任务
+}
+
+console.log("0");
+example();
+console.log("2");
+//0 1 2 3
+```
+
+
+
+##### 错误处理
+
+**try/catch**
+
+`async/await` 的错误处理最接近同步代码的方式，使用 `try/catch` 捕获 `await` 可能抛出的错误。
+
+```javascript
+async function fetchData(){
+    try {
+        const respone = await fetch('https://api');
+        const data = await respone.json();
+        console.log(data);
+    } catch(error){
+        console.error('Error:',error.message); // 捕获 fetch 或 JSON 解析错误
+    }
+};
+
+fetchData();
+```
+
+**.catch**
+
+```javasript
+async function fetchData() {
+  const response = await fetch('https://api.example.com/data');
+  const data = await response.json();
+  return data;
+}
+
+fetchData()
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error.message));
+```
+
+
+
+
+
+#### await
+
+只能在 async 函数内部使用
+
+如果 Promise 被 resolve，返回 resolve 的值
+
+如果 Promise 被 reject，抛出 reject 的值（可以用 try/catch 捕获）
+
+```javascript
+async function fetchData() {
+  const response = await fetch('https://api.example.com/data');
+  const data = await response.json();
+  return data;
+}
+```
+
+**关于事件循环**
+
+**`await`后面的表达式立即执行**：
+
+`await`后面的函数（或表达式）会**同步执行**直到遇到一个`Promise`（或直到函数执行完毕）。
+
+如果函数内部有同步代码（如`console.log`、变量赋值等），这些代码会**立刻执行**，不会等待。
+
+**`async`函数的暂停时机**：
+
+`await`会等待其后面的表达式的值被解决（即`Promise`状态变为`fulfilled`或`rejected`），此时`async`函数的执行才会暂停。
+
+如果表达式返回的是一个非`Promise`值（如字符串、数字等），`await`会将其隐式转换为`Promise.resolve(value)`，此时`async`函数会继续执行（没有实际暂停）。
+
+```javascript
+setTimeout(() => {
+    console.log('1');
+},30);
+
+(async () => {
+    console.log('2');
+    await new Promise((resolve) => {
+        console.log('3');
+        setTimeout(() => {
+            console.log('4')
+            resolve('5');
+        }, 10)
+    })
+    .then((res) => {
+        console.log(res);
+    });
+
+})();
+
+setTimeout(() => {
+    console.log('6');
+},20)
+```
+
+
+
+##### 补充知识（about：setTimeout）
+
+`setTimeout` 的回调在**宏任务队列（MacroTask Queue）**中会按照**计时器到期的时间顺序**执行
+
+**核心结论：**
+
+1. **`setTimeout` 回调按计时器到期时间排序**
+   - 多个 `setTimeout` 回调在宏任务队列中会按照**设定的延迟时间（`delay`）从小到大**执行（先到期的先执行）。
+   - 例如：`setTimeout(fn1, 10)` 会比 `setTimeout(fn2, 20)` 先执行（假设它们在同一个事件循环中被调用）。
+2. **执行顺序受事件循环机制影响**
+   - 即使某个 `setTimeout` 的回调先到期，也必须等待**当前执行栈清空** + **微任务队列（MicroTask Queue）清空**后才会执行宏任务队列中的回调。
+3. **相同延迟时间的 `setTimeout` 按调用顺序执行**
+   - 如果多个 `setTimeout` 的 `delay` 相同（例如都是 `0`），则按代码中的**调用顺序**依次执行。
+
+
+
+# Cookie-WebStorage
+
+*[参考blog](https://juejin.cn/post/7385784332444598283?searchId=20250512213554A44C3D24B4B7852396A3)*
+
+**`Cookie`、`localStorage` 和 `sessionStorage` 作为Web开发领域中广泛采用的三种客户端数据存储技术，它们各自拥有独特的优势、应用场景及限制条件，共同支撑起前端数据管理的多样化需求。也是面试常考题之一，今天就和大家简单谈一下我对它们的理解。**
+
+![image-20250512215526645](JavaScript高级.assets/image-20250512215526645.png)
+
+## Cookie
+
+**Cookie**: Cookie 最早被设计用于维护用户会话跟踪状态，例如存储登录凭证、用户偏好设置等。它的特性包括但不限于：
+
+- **服务器交互性**：Cookie 可由服务器设置并通过HTTP头部在客户端与服务器间传递，使得服务器能识别并追踪用户的特定会话信息。
+- **大小限制**：单个Cookie的大小通常限制在4KB左右，且大多数浏览器对每个域名下的总Cookie数量也有限制。
+- **生命周期管理**：可设置为会话Cookie（浏览器关闭即失效）或持久Cookie（具有指定过期时间）。
+- **安全性考量**：尽管存在安全隐患，但可通过HttpOnly标志防止XSS攻击，Secure标志保证HTTPS安全传输。
+
+cookie 可通过 `document.cookie` 获取全部 cookie。它是一段字符串，是键值对的形式。操作起来有些麻烦，可引入封装好的库进行使用，比如 `js-cookie`[点我](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fjs-cookie%2Fjs-cookie)。API 也很简洁：
+
+```javascript
+Cookies.set("name", "value", { expires: 7 }); // 设置一个cookie，7天后失效
+
+Cookies.get("name"); // => 'value'
+
+Cookies.remove("name");
+```
+
+在 web 本地存储场景上，cookie 的使用受到种种限制，最关键的就是存储容量太小和数据无法持久化存储。
+
+
+
+## Web Storage
+
+<img src="JavaScript高级.assets/image-20250512224924632.png" alt="image-20250512224924632" style="zoom:200%;" />
+
+- 应用场景：localStorage 适合持久化缓存数据，比如页面的默认偏好配置等；sessionStorage 适合一次性临时数据保存。
+
+### localStorage
+
+**localStorage**: localStorage是HTML5推出的一种持久化的客户端存储方案，特别适合存储不需要与服务器交互的大块数据，例如游戏进度、用户设置等。这是一个非常大的数字了，利用localStorage 存储必要的数据，使得在无网络环境下应用也能提供基本功能。
+
+- **大容量存储**：相比`Cookie，localStorage` 提供了更大的存储空间，一般不少于5MB，具体依浏览器而定。
+- **持久性**：除非主动删除或用户清空浏览器数据，否则数据将永久保留。
+- **简单易用**：通过JavaScript的`Web Storage API`进行操作，支持键值对存储模型。（setItem，getItem用来存储和取出数据）
+- **局限性**：受同源策略限制，且不参与网络请求，适合存储非敏感数据。
+
+```javascript
+localStorage.setItem("name", "value");
+localStorage.getItem("name"); // => 'value'
+localStorage.removeItem("name");
+localStorage.clear(); // 删除所有数据
+```
+
+**注意事项：**
+
+- localStorage 写入的时候，如果超出容量会报错，但之前保存的数据不会丢失。
+- localStorage 存储容量快要满的时候，getItem 方法性能会急剧下降。
+- web storage 在保存复杂数据类型时，较为依赖 `JSON.stringify`，在移动端性能问题比较明显。
+
+虽然localStorage 提供了便利的客户端存储能力，但由于其数据未加密且易于访问（特别是对于同源策略下的脚本），所以不适合存储敏感信息，如密码、个人身份信息等。对于这类数据，应考虑使用更安全的存储方式，如`HTTPS-only cookie`或服务器端会话存储。那么接下来就来介绍一下`sessionStorage`
+
+
+
+### sessionStorage
+
+**sessionStorage**： sessionStorage 与 localStorage 类似，也是HTML5引入的存储机制，主要区别在于数据的有效期。sessionStorage 的数据仅在当前浏览器窗口或标签页中有效，一旦关闭页面，数据就会被清除。
+
+**特点**：
+
+- **有效期**：仅在当前浏览器会话期间有效，标签页或窗口关闭即失效。
+- **容量限制**：与localStorage相似，取决于浏览器。
+- **安全性**：同样遵循同源策略，不参与网络请求。
+- **使用场景**：适合存储临时的用户输入信息或状态，如表单填写过程中的草稿保存。
+
+```javascript
+sessionStorage.setItem("name", "value");
+sessionStorage.setItem("name");
+sessionStorage.setItem("name");
+sessionStorage.clear();
+```
+
+
+
+## Storage封装
+
+封装一个自己的Storage
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script src="./fz.js"></script>
+    <script>
+        
+        const info = {
+            name:"Cookie",
+            message:"Be you want to be",
+            blog:"https://github.com/"
+        };
+
+        sessionCache.setCache('p1',info);
+        console.log(sessionCache.getCache('p1'));
+
+    </script>
+</body>
+</html>
+```
+
+**fz.js**
+
+```javascript
+class Cache{
+
+    constructor(isLocal = true) {
+        this.storage = isLocal ? localStorage : sessionStorage;
+    }
+
+    setCache(key,value){
+        if(!value) {
+            throw new Error("Value error:Value could not be empty!");
+        }
+
+        if(value) {
+            this.storage.setItem(key,JSON.stringify(value));
+        }
+    }
+
+    getCache(key) {
+        const result = this.storage.getItem(key);
+        if(result) {
+            return JSON.parse(result);
+        }
+    }
+
+    removeCache(key) {
+        this.storage.removeItem(key);
+    }
+
+    clear() {
+        this.storage.clear();
+    }
+
+}
+
+const sessionCache = new Cache(false);
+```
+
+
+
+# 正则表达式
+
+JavaScript 中的正则表达式(RegExp)是用于匹配字符串中字符组合的模式，常用于字符串的搜索、替换和验证操作。
+
+## 创建正则表达式
+
+在 JavaScript 中有两种创建正则表达式的方式：
+
+**字面量语法：**
+
+```javascript
+const regex = /pattern/flags;
+```
+
+构造函数：
+
+```javascript
+const regex = new RegExp('pattern', 'flags');
+```
+
+
+
+## 常用模式
+
+### 字符匹配
+
+- `.` - 匹配任意单个字符（除换行符）
+- `\d` - 匹配数字（等价于 `[0-9]`）
+- `\D` - 匹配非数字
+- `\w` - 匹配单词字符（字母、数字、下划线）
+- `\W` - 匹配非单词字符
+- `\s` - 匹配空白字符（空格、制表符、换行符等）
+- `\S` - 匹配非空白字符
+
+### 量词
+
+- `*` - 0次或多次
+- `+` - 1次或多次
+- `?` - 0次或1次
+- `{n}` - 恰好n次
+- `{n,}` - 至少n次
+- `{n,m}` - n到m次
+
+### 位置匹配
+
+- `^` - 匹配字符串开头
+- `$` - 匹配字符串结尾
+- `\b` - 匹配单词边界
+- `\B` - 匹配非单词边界
+
+### 字符类
+
+- `[abc]` - 匹配a、b或c
+- `[^abc]` - 匹配非a、b、c的字符
+- `[a-z]` - 匹配a到z之间的任意字符
+
+## 修饰符（flags）
+
+- `i` - 不区分大小写
+- `g` - 全局匹配（查找所有匹配而非在第一个匹配后停止）
+- `m` - 多行模式
+- `u` - Unicode模式
+- `y` - 粘性匹配（从lastIndex位置开始匹配）
+
+
+
+## 常用方法
+
+### 正则表达式方法
+
+test() - 测试是否能匹配，返回true/false
+
+```javascript
+const regex = /hello/;
+console.log(regex.test('hello word'));
+```
+
+exec() - 执行匹配，返回匹配结果数组或者null
+
+```javascript
+const regex = /hello (\w+)/;
+const result = regex.exec('hello world');
+console.log(result[1]);
+```
+
+
+
+### 字符串方法
+
+`match()` - 返回匹配结果数组
+
+```javascript
+'hello'.match(/h/); // ["h"]
+```
+
+`search()` - 返回匹配位置的索引
+
+```javascript
+'hello'.search(/e/); // 1
+```
+
+`replace()` - 替换匹配的子串
+
+```javascript
+'hello'.replace(/l/g, 'L'); // "heLLo"
+```
+
+`split()` - 使用正则分割字符串
+
+```javascript
+'a,b,c'.split(/,/); // ["a", "b", "c"]
+```
+
+
+
+## 应用场景
+
+### 验证邮箱
+
+```javascript
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+console.log(emailRegex.test('test@example.com')); // true
+```
+
+
+
+### 提取URL参数
+
+```javascript
+const url = 'https://example.com?name=John&age=30';
+const paramRegex = /[?&]([^=#]+)=([^&#]*)/g;
+let match;
+while (match = paramRegex.exec(url)) {
+  console.log(`${match[1]}: ${match[2]}`);
+}
+// 输出:
+// name: John
+// age: 30
+```
+
+
+
+### 替换日期
+
+```javascript
+const date = '2023-05-15';
+const newDate = date.replace(/(\d{4})-(\d{2})-(\d{2})/, '$2/$3/$1');
+console.log(newDate); // "05/15/2023"
+```
+
+
+
+# 防抖(Debounce) & 节流(Throttle)
+
+***[不错的blog！！！！](https://juejin.cn/post/6844903669389885453?searchId=20250513120535BF4633F7B85FBB1D4EEF)***
+
+## 函数防抖(Debounce)
+
+**核心思想：在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时。**
+
+```javascript
+//模拟Ajax
+function ajax(content) {
+            console.log('ajax request ' + content);
+        }
+
+        function debounce(fn,delay){
+            let timer = null;
+            return function(args){
+                let that = this;
+                let _args = args;
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    fn.call(that,_args);
+                },delay);
+            }
+        }
+            
+        let input = document.getElementById('debounce');
+        let debounceAjax = debounce(ajax,500);
+        input.addEventListener('keyup',function(e) {
+            debounceAjax(e.target.value);
+        })
+```
+
+
+
+
+
+## 函数节流(throttle)
+
+**核心思想：规定在一个单位时间内，只能触发一次函数。如果这个单位时间内触发多次函数，只有一次生效。**
+
+```javascript
+function throttle(fn,delay){
+            let last,deferTimer;
+            return function(args) {
+                let that = this;
+                let _args = arguments;
+                let now = +new Date();
+                if(last && now < last + delay){
+                    clearTimeout(deferTimer);
+                    deferTimer = setTimeout(function() {
+                        last = now;
+                        fn.apply(that,_args);
+                    },delay);
+                }
+                else {
+                    last = now;
+                    fn.apply(that,_args);
+                }
+            }
+        }
+
+        let throttleAjax = throttle(ajax,1000);
+
+        let input = document.getElementById('throttle');
+        input.addEventListener('keyup',function(e) {
+            throttleAjax(e.target.value);
+        });
+```
+
+
+
+
+
+## 区别对比
+
+|   特性   |   防抖（Debounce）   | 节流（Throttle） |
+| :------: | :------------------: | :--------------: |
+| 执行时机 |    停止触发后执行    |   固定间隔执行   |
+| 触发频率 | 高频率触发会重置计时 | 高频率触发会忽略 |
+| 适用场景 |  输入验证、窗口调整  |  滚动、鼠标移动  |
+
+
+
+# 浅拷贝-深拷贝
+
+## 浅拷贝
+
+浅拷贝是指将原对象或数组的值复制到一个新的对象或数组中，但是新的对象或数组的属性或元素依然是原对象或数组的**引用**，这意味着当我们**修改其中一个对象或数组时，另一个对象或数组也会受到影响**。因此，浅拷贝通常只针对**引用类型**。下面是常见的浅拷贝方法：
+
+
+
+### **1.Object.assign({},obj)**
+
+Object.assign()方法是用于将一个或多个源对象的属性复制到目标现象
+
+```JavaScript
+Object.assign(target,...sources);
+//其中，target 是目标对象，sources 是一个或多个源对象。
+```
+
+该方法会遍历源对象的所有可枚举属性，并将其复制到目标对象中。如果目标对象中有相同的属性，则后面的属性**会覆盖前面的属性**。
+
+需要注意的是，该方法**只会复制对象自身的属性，不会复制继承自原型链上的属性**。而且，如果源对象中有值为 **null 或 undefined 的属性，则该属性不会被复制**。
+
+
+
+```javascript
+let a = {
+            name:"A",
+            hobby:{f:"coding"}
+        }
+        let b = Object.assign({},a);//共享
+        a.name = "H";//独立
+        a.hobby.f = "playing";
+
+        console.log(a);
+        console.log(b);
+```
+
+
+
+### **2.[].concat(arr)**
+
+**[].concat()方法可以用于将一个或多个数组合并成一个新数组**
+
+```javascript
+let arr = [1,2,3,[10,100]];
+        let newArr = [].concat(arr);
+        arr.push(4);
+        arr[3][1] = 711;
+
+        console.log(arr);
+        console.log(newArr);
+```
+
+
+
+### 3.数组解构[...arr]
+
+数组解构是一种将数组或类数组对象中的值提取出来，赋值给变量的方法。它可以让我们更方便地访问数组的元素
+
+```javascript
+const arr1 = [1,2,3,[10,19]];
+        const arr2 = [...arr1,5,6,4];
+        arr1[3][1] = 99;
+        console.log(arr1);
+        console.log(arr2);
+```
+
+
+
+### 4.arr.slice()
+
+slice() 方法是 JavaScript 数组对象的一个方法，用于从数组中提取指定区间的元素创建一个新的数组，并不会对原数组产生影响。它接受两个参数：开始索引和结束索引，当参数为空时，则会复制整个原数组 arr。这意味着返回的新数组与原数组具有相同的元素、长度和顺序。
+
+```javascript
+const array1 = [1,2,3,4,[7,8]];
+        const array2 = array1.slice();
+        array1[4][1] = 100;
+        console.log(array1);
+        console.log(array2);
+```
+
+
+
+## 深拷贝
+
+深拷贝是指将原对象或数组的值复制到一个新的对象或数组中，并且新的对象或数组的属性或元素完全独立于原对象或数组，即它们不共享引用地址。因此，当我们修改其中一个对象或数组时，另一个对象或数组不会受到任何影响。
+
+
+
+### JSON方法
+
+常见的深拷贝方法是使用 **JSON.parse(JSON.stringify(obj))**，它的语法如下：
+
+```javascript
+let obj = {
+            name:"Cookie",
+            age:19,
+            friends:{
+                GG:{
+                    name:"Popguys",
+                    age:20
+                },
+                Sp:{
+                    name:"Jack",
+                    age:22
+                }
+            }
+        }
+
+        let obj2 = JSON.parse(JSON.stringify(obj));
+        obj.friends = {SK:{name:"GG-bond",age:99}};
+        console.log(obj);
+        console.log(obj2);
+```
+
+**缺陷：**
+
+1.不能处理 undefined、function 和 Symbol 等特殊数据类型，因为它们在 JSON 中没有对应的表示方式（为undefined时会报错）。
+
+2.无法处理循环引用，即当一个对象的属性指向自身或形成循环引用关系时，深拷贝会陷入无限递归。
+
+
+
+### 手写实现深拷贝
+
+```javascript
+function deepCopy(obj, hash = new WeakMap()){
+            // 处理基本类型
+            if(obj === null || typeof obj !== "object")return obj;
+
+            // 处理循环引用
+            if(hash.has(obj))return hash.get(obj);
+
+            // 处理特殊对象
+            if(obj instanceof Date)return new Date(obj);
+            if(obj instanceof RegExp)return new RegExp(obj);
+
+            // 创建新对象/数组
+            const copy = Array.isArray(obj) ? [] : {};
+
+            // 复制Symbol属性
+            const symKeys = Object.getOwnPropertySymbols(obj);
+            if(symKeys.length){
+                symKeys.forEach(symKey => {
+                    copy[symKey] = deepCopy(obj[symKey],hash); 
+                });
+            };
+
+            // 复制普通属性
+            for(let key in obj){
+                if(obj.hasOwnProperty(key)){
+                    copy[key] = deepCopy(obj[key],hash);
+                }
+            }
+
+            return copy;
+        };
+
+        const obj1 = [1, 2, 3, 4,[213, 223, {name:"Popguys"}]];
+        const obj2 = deepCopy(obj1);
+        obj1[4][2].name = "GG-bond";
+
+        console.log(obj1);
+        console.log(obj2);
+```
+
+
+
+# 事件总线(Event Bus)
+
+事件总线是一种在应用程序中实现组件间通信的模式，它允许不同部分的代码通过发布(publish)和订阅(subscribe)事件来进行交互，而不需要直接引用彼此。
+
+
+
+## AI简单实现
+
+```javascript
+class EventBus {
+  constructor() {
+    this.events = {};
+  }
+
+  // 订阅事件
+  on(eventName, callback) {
+    if (!this.events[eventName]) {
+      this.events[eventName] = [];
+    }
+    this.events[eventName].push(callback);
+  }
+
+  // 发布事件
+  emit(eventName, ...args) {
+    if (this.events[eventName]) {
+      this.events[eventName].forEach(callback => {
+        callback(...args);
+      });
+    }
+  }
+
+  // 取消订阅
+  off(eventName, callback) {
+    if (this.events[eventName]) {
+      this.events[eventName] = this.events[eventName].filter(
+        cb => cb !== callback
+      );
+    }
+  }
+
+  // 一次性订阅
+  once(eventName, callback) {
+    const onceCallback = (...args) => {
+      callback(...args);
+      this.off(eventName, onceCallback);
+    };
+    this.on(eventName, onceCallback);
+  }
+}
+
+// 使用示例
+const bus = new EventBus();
+
+// 订阅事件
+bus.on('message', (msg) => {
+  console.log('收到消息:', msg);
+});
+
+// 发布事件
+bus.emit('message', 'Hello World!');
+
+// 一次性订阅
+bus.once('greet', (name) => {
+  console.log(`Hello, ${name}!`);
+});
+
+bus.emit('greet', 'Alice'); // 会触发
+bus.emit('greet', 'Bob');   // 不会触发
+```
+
+
+
+# Ajax

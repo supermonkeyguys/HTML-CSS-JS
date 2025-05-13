@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <input id="throttle">
+
+    <script>
+
+        function ajax(content){
+            console.log(`ajax request ${content}`);
+        }
+
+        function throttle(fn,delay){
+            let last,deferTimer;
+            return function(args) {
+                let that = this;
+                let _args = arguments;
+                let now = +new Date();
+                if(last && now < last + delay){
+                    clearTimeout(deferTimer);
+                    deferTimer = setTimeout(function() {
+                        last = now;
+                        fn.apply(that,_args);
+                    },delay);
+                }
+                else {
+                    last = now;
+                    fn.apply(that,_args);
+                }
+            }
+        }
+
+        let throttleAjax = throttle(ajax,1000);
+
+        let input = document.getElementById('throttle');
+        input.addEventListener('keyup',function(e) {
+            throttleAjax(e.target.value);
+        });
+
+
+    </script>
+</body>
+</html>

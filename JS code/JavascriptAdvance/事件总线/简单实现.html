@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        class EventBus {
+        constructor() {
+            this.events = {};
+        }
+
+        // 订阅事件
+        on(eventName, callback) {
+            if (!this.events[eventName]) {
+                this.events[eventName] = [];
+            }
+            this.events[eventName].push(callback);
+        }
+
+        // 发布事件
+        emit(eventName, ...args) {
+            if (this.events[eventName]) {
+                this.events[eventName].forEach(callback => {
+                    callback(...args);
+                });
+            }
+        }
+
+        // 取消订阅
+        off(eventName, callback) {
+            if (this.events[eventName]) {
+                this.events[eventName] = this.events[eventName].filter(
+                    cb => cb !== callback
+                );
+            }
+        }
+
+        // 一次性订阅
+        once(eventName, callback) {
+            const onceCallback = (...args) => {
+                callback(...args);
+                this.off(eventName, onceCallback);
+            };
+            this.on(eventName, onceCallback);
+        }
+        }
+
+        // 使用示例
+        const bus = new EventBus();
+
+        // 订阅事件
+        bus.on('message', (msg) => {
+        console.log('收到消息:', msg);
+        });
+
+        // 发布事件
+        bus.emit('message', 'Hello World!');
+
+        // 一次性订阅
+        bus.once('greet', (name) => {
+        console.log(`Hello, ${name}!`);
+        });
+
+        bus.emit('greet', 'Alice'); // 会触发
+        bus.emit('greet', 'Bob');   // 不会触发
+
+    </script>
+</body>
+</html>

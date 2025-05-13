@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+
+        const regex = /hello (\w+)/;
+        const result = regex.exec('hello world');
+        console.log(result);
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        console.log(emailRegex.test('3029@qq.com')); // true
+
+        const url = 'https://example.com?name=John&age=30';
+        const paramRegex = /[?&]([^=#]+)=([^&#]*)/g;
+        let match;
+        while (match = paramRegex.exec(url)) {
+            console.log(`${match[1]}: ${match[2]}`);
+        }
+        // 输出:
+        // name: John
+        // age: 30
+
+        const date = '2023-05-15';
+        const newDate = date.replace(/(\d{4})-(\d{2})-(\d{2})/, '$2/$3/$1');
+        console.log(newDate); // "05/15/2023"
+
+    </script>
+</body>
+</html>

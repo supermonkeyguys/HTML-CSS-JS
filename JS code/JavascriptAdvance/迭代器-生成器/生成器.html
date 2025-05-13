@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+        function* generator(arg1){
+            console.log(`arg1:${arg1}`);
+            const arg2 = yield "Second"
+            console.log(`arg2:${arg2}`);
+
+            const arg3 = yield "Thrid";
+            console.log(`arg3:${arg3}`);
+
+            yield "GG"
+            console.log(`The end?`);
+        }
+
+        const generatorFn = generator("1");
+
+        console.log(generatorFn.next());
+        console.log(generatorFn.next("2"));
+        console.log(generatorFn.return("3"));
+        console.log(generatorFn.next());
+
+        function* foo(){
+
+            console.log(1);
+
+            try{
+                yield "666";
+            }catch(err){
+                console.log(`TypeErr: ${err}`);
+            }
+
+            yield 999;
+
+            console.log("The end");
+        }
+
+        const gtFoo = foo();
+
+        console.log(gtFoo.next());
+        console.log(gtFoo.throw(new Error("???")));
+        console.log(gtFoo.next());
+
+        console.log("------")
+
+        function* rangeNumber(sta,end){
+            for(let i = sta ; i < end ; i ++ ){
+                yield i;
+            }
+        }
+
+        const rangeNum = rangeNumber(9,123);
+
+        console.log(rangeNum.next());
+        console.log(rangeNum.next());
+        console.log(rangeNum.next());
+        console.log(rangeNum.next());
+
+
+
+    </script>
+</body>
+</html>

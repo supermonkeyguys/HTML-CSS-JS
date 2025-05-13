@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <input id="debounce">
+
+    <script>
+
+        function ajax(content) {
+            console.log('ajax request ' + content);
+        }
+
+        function debounce(fn,delay){
+            let timer = null;
+            return function(args){
+                let that = this;
+                let _args = args;
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    fn.call(that,_args);
+                },delay);
+            }
+        }
+            
+        let input = document.getElementById('debounce');
+        let debounceAjax = debounce(ajax,500);
+        input.addEventListener('keyup',function(e) {
+            debounceAjax(e.target.value);
+        })
+
+    </script>
+</body>
+</html>

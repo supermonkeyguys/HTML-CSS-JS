@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        function deepCopy(obj, hash = new WeakMap()){
+            // 处理基本类型
+            if(obj === null || typeof obj !== "object")return obj;
+
+            // 处理循环引用
+            if(hash.has(obj))return hash.get(obj);
+
+            // 处理特殊对象
+            if(obj instanceof Date)return new Date(obj);
+            if(obj instanceof RegExp)return new RegExp(obj);
+
+            // 创建新对象/数组
+            const copy = Array.isArray(obj) ? [] : {};
+
+            // 复制Symbol属性
+            const symKeys = Object.getOwnPropertySymbols(obj);
+            if(symKeys.length){
+                symKeys.forEach(symKey => {
+                    copy[symKey] = deepCopy(obj[symKey],hash); 
+                });
+            };
+
+            // 复制普通属性
+            for(let key in obj){
+                if(obj.hasOwnProperty(key)){
+                    copy[key] = deepCopy(obj[key],hash);
+                }
+            }
+
+            return copy;
+        };
+
+        const obj1 = [1, 2, 3, 4,[213, 223, {name:"Popguys"}]];
+        const obj2 = deepCopy(obj1);
+        obj1[4][2].name = "GG-bond";
+
+        console.log(obj1);
+        console.log(obj2);
+
+    </script>
+</body>
+</html>

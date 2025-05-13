@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+
+        const obj1 = {name:"Cookie",age:19};
+        const obj2 = Object.create(obj1);
+        obj1.id = 1689;
+
+        obj1.name = "Popguys";
+        console.log(obj1);
+        console.log(obj2);
+
+        let a = {
+            name:"A",
+            hobby:{f:"coding"}
+        }
+        let b = Object.assign({},a);
+        a.name = "H";
+        a.hobby.f = "playing";
+
+        console.log(a);
+        console.log(b);
+
+        let arr = [1,2,3,[10,100]];
+        let newArr = [].concat(arr);
+        arr.push(4);
+        arr[3][1] = 711;
+
+        console.log(arr);
+        console.log(newArr);
+
+        const arr1 = [1,2,3,[10,19]];
+        const arr2 = [...arr1,5,6,4];
+        arr1[3][1] = 99;
+        console.log(arr1);
+        console.log(arr2);
+
+        const array1 = [1,2,3,4,[7,8]];
+        const array2 = array1.slice();
+        array1[4][1] = 100;
+        console.log(array1);
+        console.log(array2);
+
+
+    </script>
+</body>
+</html>

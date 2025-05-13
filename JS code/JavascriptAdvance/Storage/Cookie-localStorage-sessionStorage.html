@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+        localStorage.setItem('username','Cookie');
+        localStorage.setItem('id','1689');
+
+        const userName = localStorage.getItem('username');
+        console.log(userName);
+
+        localStorage.removeItem('username');
+
+        const key = localStorage.key(0);
+        console.log(key);
+
+        localStorage.clear();
+
+        // 直接属性方式操作（不推荐）
+        localStorage.username = 'JohnDoe'; // 设置
+        console.log(localStorage.username); // 获取
+        delete localStorage.username; // 删除
+    </script>
+</body>
+</html>

@@ -324,3 +324,5 @@ console.log(1);
 
 ![](JS进阶问题.assets/主线程和任务队列.jpg)
 
+
+

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <script>
+
+        const requestData = function(arg){
+            return new Promise((resolve,reject) => {
+                setTimeout(() => {
+                    resolve(arg);
+                },2000);
+            })
+        }
+
+        async function getData(name,address,id){
+            const res1 = await requestData(name);
+            console.log(res1);
+
+            const res2 = await requestData(`${res1} ${address}`);
+            console.log(res2);
+
+            const res3 = await requestData(`${res2} ${id}`);
+            console.log(res3);
+        }
+
+        const dataShow = getData("Cookie","HN",1680);
+
+        console.log(fn);
+        console.log(fn(10));
+
+        async function fn(num){
+
+            // throw new Error("GG");
+
+            return num
+        }
+
+        
+        
+
+    </script>
+</body>
+</html>
